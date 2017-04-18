@@ -1,0 +1,101 @@
+
+C:\Users\nowko\Dropbox\WorkSpace\Rachet\public>composer require
+Search for a package: rachet
+Search for a package: ratchet
+
+Found [32m15[39m packages matching [32mratchet[39m
+
+ [32m  [0][39m cboden/ratchet
+ [32m  [1][39m gos/ratchet
+ [32m  [2][39m wyrihaximus/ratchet
+ [32m  [3][39m ratchet/pawl
+ [32m  [4][39m ratchet/rfc6455
+ [32m  [5][39m gos/ratchet-stack
+ [32m  [6][39m wyrihaximus/ratchet-model-push
+ [32m  [7][39m wyrihaximus/ratchet-commands
+ [32m  [8][39m askedio/laravel-ratchet
+ [32m  [9][39m p2/ratchet-bundle
+ [32m [10][39m xj/yii2-ratchet-widget
+ [32m [11][39m gos/websocket-client
+ [32m [12][39m bazo/wamp-client
+ [32m [13][39m gos/web-socket-bundle
+ [32m [14][39m consik/yii2-websocket
+
+Enter package # to add, or the complete package name if it is not listed: 0
+Enter the version constraint to require (or leave blank to use the latest version):
+Using version [32m^0.3.6[39m for [32mcboden/ratchet[39m
+Search for a package:
+[32m./composer.json has been updated[39m
+[32mLoading composer repositories with package information[39m
+[32mUpdating dependencies (including require-dev)[39m
+  - Installing [32msymfony/routing[39m ([33mv3.2.7[39m)
+    Loading from cache
+
+  - Installing [32msymfony/http-foundation[39m ([33mv3.2.7[39m)
+    Loading from cache
+
+  - Installing [32mreact/promise[39m ([33mv2.5.1[39m)
+    Loading from cache
+
+  - Installing [32mevenement/evenement[39m ([33mv2.0.0[39m)
+    Loading from cache
+
+  - Installing [32mreact/stream[39m ([33mv0.4.6[39m)
+    Loading from cache
+
+  - Installing [32mreact/event-loop[39m ([33mv0.4.2[39m)
+    Loading from cache
+
+  - Installing [32mreact/socket[39m ([33mv0.4.6[39m)
+    Loading from cache
+
+  - Installing [32msymfony/event-dispatcher[39m ([33mv3.2.7[39m)
+    Loading from cache
+
+  - Installing [32mguzzle/common[39m ([33mv3.9.2[39m)
+    Loading from cache
+
+  - Installing [32mguzzle/stream[39m ([33mv3.9.2[39m)
+    Loading from cache
+
+  - Installing [32mguzzle/parser[39m ([33mv3.9.2[39m)
+    Loading from cache
+
+  - Installing [32mguzzle/http[39m ([33mv3.9.2[39m)
+    Loading from cache
+
+  - Installing [32mcboden/ratchet[39m ([33mv0.3.6[39m)
+    Loading from cache
+
+symfony/routing suggests installing doctrine/annotations (For using the annotation loader)
+symfony/routing suggests installing symfony/dependency-injection (For loading routes from a service)
+symfony/routing suggests installing symfony/expression-language (For using expression matching)
+react/event-loop suggests installing ext-libevent (>=0.1.0)
+react/event-loop suggests installing ext-event (~1.0)
+react/event-loop suggests installing ext-libev (*)
+symfony/event-dispatcher suggests installing symfony/dependency-injection ()
+symfony/event-dispatcher suggests installing symfony/http-kernel ()
+[30;43mPackage guzzle/common is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/stream is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/parser is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/http is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[32mWriting lock file[39m
+[32mGenerating autoload files[39m
+> Cake\Composer\Installer\PluginInstaller::postAutoloadDump
+
+C:\Users\nowko\Dropbox\WorkSpace\Rachet\public>composer update
+[32mLoading composer repositories with package information[39m
+[32mUpdating dependencies (including require-dev)[39m
+Nothing to install or update
+[30;43mPackage guzzle/common is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/stream is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/parser is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/http is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[32mWriting lock file[39m
+[32mGenerating autoload files[39m
+> Cake\Composer\Installer\PluginInstaller::postAutoloadDump
+
+C:\Users\nowko\Dropbox\WorkSpace\Rachet\public\bin>php chat-server.php
+New connection! (65)
+Connection 65 sending message "Hello World!" to 0 other connections
+^C

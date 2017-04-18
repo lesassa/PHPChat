@@ -1,0 +1,147 @@
+
+C:\Users\nowko\Dropbox\WorkSpace\Rachet>composer create-project --prefer-dist cakephp/app public
+[32mInstalling cakephp/app (3.4.1)[39m
+  - Installing [32mcakephp/app[39m ([33m3.4.1[39m)
+    Downlo    Downloading: [33m100%[39m
+
+[32mCreated project in public[39m
+[32mLoading composer repositories with package information[39m
+[32mUpdating dependencies (including require-dev)[39m
+  - Installing [32mcakephp/plugin-installer[39m ([33m1.0.0[39m)
+    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mpsr/http-message[39m ([33m1.0.1[39m)
+    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mzendframework/zend-diactoros[39m ([33m1.4.0[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downloading: [33m100%[39m
+
+  - Installing [32maura/intl[39m ([33m3.0.0[39m)
+    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mmobiledetect/mobiledetectlib[39m ([33m2.8.25[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mpsr/log[39m ([33m1.0.2[39m)
+    Loading from cache
+
+  - Installing [32mcakephp/chronos[39m ([33m1.1.1[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcakephp/cakephp[39m ([33m3.4.5[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/yaml[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m70%[39m    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/debug[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/polyfill-mbstring[39m ([33mv1.3.0[39m)
+    Loading from cache
+
+  - Installing [32msymfony/console[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/filesystem[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/config[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mrobmorgan/phinx[39m ([33mv0.6.5[39m)
+    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcakephp/migrations[39m ([33m1.6.7[39m)
+    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mjakub-onderka/php-console-color[39m ([33m0.1[39m)
+    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mjakub-onderka/php-console-highlighter[39m ([33mv0.3.2[39m)
+    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mdnoegel/php-xdg-base-dir[39m ([33m0.1[39m)
+    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mnikic/php-parser[39m ([33mv3.0.5[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/var-dumper[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mpsy/psysh[39m ([33mv0.8.3[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mjdorn/sql-formatter[39m ([33mv1.2.17[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/process[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32msymfony/finder[39m ([33mv3.2.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mseld/phar-utils[39m ([33m1.0.1[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mseld/jsonlint[39m ([33m1.6.0[39m)
+    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mseld/cli-prompt[39m ([33m1.0.3[39m)
+    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mjustinrainbow/json-schema[39m ([33m5.2.0[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m65%[39m    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcomposer/spdx-licenses[39m ([33m1.1.6[39m)
+    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcomposer/semver[39m ([33m1.4.2[39m)
+    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcomposer/ca-bundle[39m ([33m1.0.7[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcomposer/composer[39m ([33m1.4.1[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcakephp/debug_kit[39m ([33m3.9.3[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+  - Installing [32mcakephp/bake[39m ([33m1.3.3[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m50%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m100%[39m
+
+cakephp/app suggests installing markstory/asset_compress (An asset compression plugin which provides file concatenation and a flexible filter system for preprocessing and minification.)
+cakephp/app suggests installing phpunit/phpunit (Allows automated tests to be run without system-wide install.)
+cakephp/app suggests installing cakephp/cakephp-codesniffer (Allows to check the code against the coding standards used in CakePHP.)
+cakephp/cakephp suggests installing lib-ICU (The intl PHP library, to use Text::transliterate() or Text::slug())
+symfony/console suggests installing symfony/event-dispatcher ()
+symfony/var-dumper suggests installing ext-symfony_debug ()
+psy/psysh suggests installing ext-pcntl (Enabling the PCNTL extension makes PsySH a lot happier :))
+psy/psysh suggests installing ext-posix (If you have PCNTL, you'll want the POSIX extension as well.)
+psy/psysh suggests installing ext-readline (Enables support for arrow-key history navigation, and showing and manipulating command history.)
+psy/psysh suggests installing ext-pdo-sqlite (The doc command requires SQLite to work.)
+psy/psysh suggests installing hoa/console (A pure PHP readline implementation. You'll want this if your PHP install doesn't already support readline or libedit.)
+cakephp/debug_kit suggests installing ext-sqlite (DebugKit needs to store panel data in a database. SQLite is simple and easy to use.)
+[32mWriting lock file[39m
+[32mGenerating autoload files[39m
+> Cake\Composer\Installer\PluginInstaller::postAutoloadDump
+> App\Console\Installer::postInstall
+Created `config/app.php` file
+[32mSet Folder Permissions ? (Default to Y)[39m [[33mY,n[39m]? y
+Updated Security.salt value in config/app.php
+
+C:\Users\nowko\Dropbox\WorkSpace\Rachet>cd public
+
+C:\Users\nowko\Dropbox\WorkSpace\Rachet\public>composer install
+[32mLoading composer repositories with package information[39m
+[32mInstalling dependencies (including require-dev) from lock file[39m
+Nothing to install or update
+[32mGenerating autoload files[39m
+> Cake\Composer\Installer\PluginInstaller::postAutoloadDump
+> App\Console\Installer::postInstall
+[32mSet Folder Permissions ? (Default to Y)[39m [[33mY,n[39m]? y
+No Security.salt placeholder to replace.
+
+C:\Users\nowko\Dropbox\WorkSpace\Rachet\public>
