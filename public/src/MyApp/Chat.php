@@ -2,7 +2,6 @@
 namespace MyApp;
 use Ratchet\MessageComponentInterface;
 use Ratchet\ConnectionInterface;
-use Cake\ORM\TableRegistry;
 
 class Chat implements MessageComponentInterface {
     protected $clients;
@@ -24,12 +23,7 @@ class Chat implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
 
-    	$ChatsDBI = TableRegistry::get('Chats');
-    	$chat = $ChatsDBI->newEntity();
-    	$chat->roomId = 1;
-    	$chat->chatNumber = $counter + 1;
-    	$chat->chatText = $msg;
-    	$ChatsDBI->save($chat);
+    	$msg .= exec('C:\Users\nowko\Dropbox\WorkSpace\Rachet\public\bin\cake chat hey_there test');
 
         $numRecv = count($this->clients) - 1;
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"

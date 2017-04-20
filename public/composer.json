@@ -10,7 +10,7 @@
         "mobiledetect/mobiledetectlib": "2.*",
         "cakephp/migrations": "~1.0",
         "cakephp/plugin-installer": "*",
-        "cboden/ratchet": "^0.3.6"
+        "cboden/ratchet": "*"
     },
     "require-dev": {
         "psy/psysh": "@stable",
@@ -27,7 +27,7 @@
             "App\\": "src"
         },
         "psr-0": {
-           "MyApp": "src"
+            "MyApp": "src"
         }
     },
     "autoload-dev": {

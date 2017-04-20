@@ -75,8 +75,6 @@ use Cake\Utility\Security;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
-    //個人設定
-    Configure::load('const', 'default');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }
@@ -101,8 +99,7 @@ if (Configure::read('debug')) {
  * Set server timezone to UTC. You can change it to another timezone of your
  * choice but using UTC makes time calculations / conversions easier.
  */
-// date_default_timezone_set('UTC');
-date_default_timezone_set('Asia/Tokyo');
+date_default_timezone_set('UTC');
 
 /*
  * Configure the mbstring extension to use the correct encoding.
@@ -221,5 +218,5 @@ Type::build('timestamp')
  * Debug Kit should not be installed on a production system
  */
 if (Configure::read('debug')) {
-    Plugin::load('DebugKit', ['bootstrap' => false]);
+    Plugin::load('DebugKit', ['bootstrap' => true]);
 }
