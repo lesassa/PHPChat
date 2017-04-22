@@ -36,5 +36,12 @@ class AppView extends View
      */
     public function initialize()
     {
+    	//個人フォームヘルパー読込
+    	$this->loadHelper('Form', [
+    			'templates' => 'app_form',
+    	]);
+    	$this->loadHelper('Paginator', [
+    			'templates' => 'app_paginator',
+    	]);
     }
 }
