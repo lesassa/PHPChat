@@ -26,10 +26,12 @@ jQuery(function ($) {
 });
 
 </script>
-<h1>チャット</h1>
-<div id="chat"></div>
+<h2>チャット</h2>
+<p id="chat"></p>
 
 <?=$this->Form->create(null,['type' => 'post']) ?>
-<?=$this->Form->input("chatText", ["type" => "text",]) ?>
-<?=$this->Form->input("send", ["type" => "button",]) ?>
+<table>
+	<tr><td><?=$this->Form->input("chatText", ["type" => "textarea",]) ?></td></tr>
+	<tr><td><?=$this->Form->input("send", ["type" => "button",]) ?></td></tr>
+</table>
 <?=$this->Form->end() ?>

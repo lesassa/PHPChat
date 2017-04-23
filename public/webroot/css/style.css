@@ -1,0 +1,607 @@
+@CHARSET "UTF-8";
+
+/*PC・タブレット・スマホ共通設定
+---------------------------------------------------------------------------*/
+@media only screen and (min-width:800px) and (max-width:970px){
+footer {
+	width: 976px;
+}
+}
+
+
+/*全体の設定
+---------------------------------------------------------------------------*/
+body {
+	margin: 0px;
+	padding: 0px;
+	font: 14px/2 "メイリオ", Meiryo, "ＭＳ Ｐゴシック", Osaka, "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro";	/*文字サイズ、行間、フォントファミリー*/
+	color: #333;	/*全体の文字色*/
+	background: #eef;	/*全体の背景色*/
+}
+h1,h2,h3,h4,h5,p,ul,ol,li,dl,dt,dd,form,figure{
+	margin: 0px;
+	padding: 0px;
+}
+ul{
+	list-style-type: none;
+}
+img {
+	border: none;
+	vertical-align: bottom;
+}
+input,textarea,select {
+	font-size: 1em;
+}
+form {
+	margin: 0px;
+}
+table {
+	border-collapse:collapse;
+	font-size: 100%;
+	border-spacing: 0;
+}
+
+textarea {
+	width: 95%;
+}
+
+/*リンク（全般）設定
+---------------------------------------------------------------------------*/
+a {
+	color: #333;	/*リンクテキストの色*/
+}
+a:hover {
+	color: #396523;			/*マウスオン時の文字色（全体）*/
+	text-decoration: none;	/*マウスオン時に下線を消す設定。残したいならこの１行削除。*/
+}
+
+/*コンテナー（HPを囲むブロック　※footerを除く）
+---------------------------------------------------------------------------*/
+#container {
+	width: 980px;	/*コンテナー幅*/
+	margin: 0px auto;
+}
+/*ヘッダー
+---------------------------------------------------------------------------*/
+/*ヘッダーブロック*/
+header {
+	height: 100px;	/*高さ*/
+	position: relative;
+	display:inline;
+}
+
+/*上部のメインメニュー
+---------------------------------------------------------------------------*/
+nav#menubar {
+	clear: both;
+}
+/*メニュー１個ごとの設定*/
+nav#menubar ul li {
+	float: left;
+	width: 156px;		/*メニュー幅*/
+	margin-left: 8px;	/*メニュー間にあけるスペース*/
+	background: #396523;	/*背景色*/
+	position: relative;
+	margin-bottom: 20px;
+}
+nav#menubar ul li a {
+	text-decoration: none;
+	display: block;
+	color: #FFF;	/*文字色*/
+	text-align: center;		/*文字をセンタリング*/
+	padding: 10px 0px;		/*上下、左右への余白*/
+	-webkit-transition: 0.5s;	/*マウスオン時の移り変わるまでの時間設定。0.5秒。*/
+	transition: 0.5s;			/*同上*/
+}
+/*最初のメニューの設定*/
+nav#menubar ul li:first-child {
+	margin-left: 0px;
+}
+/*マウスオン時の設定*/
+nav#menubar ul li a:hover {
+	background: #000;	/*背景色*/
+	color: #FFF;		/*文字色*/
+}
+
+/*ドロップダウンメニュー用
+---------------------------------------------------------------------------*/
+ul.ddmenu {
+	position:absolute;
+	visibility: hidden;
+    z-index: 10;
+	width: 239px;	/*上の「nav#menubar ul li」の「width」の値と揃えておく*/
+}
+ul.ddmenu li {
+	margin: 0 !important;
+}
+ul.ddmenu li a {
+	border-top: solid 1px #FFF;	/*上の線の幅、線種、色。ここでは白にしてメニュー間の境界線として使用。*/
+	background: #396523 !important;	/*背景色*/
+	padding: 3px 0px !important;	/*メニュー１段分の高さを少し狭くする設定。トップのメニューと同じサイズがいいならこの行削除。*/
+}
+ul.ddmenu li a:hover {
+	background: #000 !important;	/*マウスオン時の背景色*/
+}
+
+
+/*メインコンテンツ
+---------------------------------------------------------------------------*/
+#main {
+	padding-bottom: 30px;
+}
+/*１カラム使用時のメインコンテンツ*/
+.c1 #main {
+	float: none;
+	width: 100%;
+}
+/*mainコンテンツのh2タグの設定*/
+#main h2 {
+	clear: both;
+	margin-bottom: 15px;
+	font-size: 100%;
+	color: #FFF;		/*文字色*/
+	background: #000;	/*背景色*/
+	padding: 2px 15px;	/*上下、左右への余白*/
+	border-bottom: 3px solid #396523;	/*下線の幅、線種、色*/
+}
+/*mainコンテンツのちょっと大きめ見出し用h2タグの設定*/
+#main h2.type1 {
+	padding: 20px 15px;		/*上下、左右への余白*/
+	font-size: 20px;		/*文字サイズ*/
+	font-weight: normal;	/*hタグのデフォルトの太字を標準にする設定*/
+	letter-spacing: 0.2em;	/*文字間隔を空ける設定*/
+	border: none;
+}
+/*mainコンテンツのh3タグの設定*/
+#main h3 {
+	clear: both;
+	margin-bottom: 15px;
+	font-size: 100%;
+	background: #FFF;	/*背景色*/
+	padding: 2px 15px;	/*上下、左右への余白*/
+	border-top: 1px solid #ccc;			/*上の線の幅、線種、色*/
+	border-right: 1px solid #ccc;		/*右の線の幅、線種、色*/
+	border-bottom: 3px solid #396523;	/*下の線の幅、線種、色*/
+	border-left: 1px solid #ccc;		/*左の線の幅、線種、色*/
+}
+/*mainコンテンツの段落タグ設定*/
+#main p {
+	padding: 10px 15px 15px;	/*上、左右、下への余白*/
+}
+#main p + p {
+	padding-top: 0px;
+}
+#main h2 + p,
+#main h3 + p {
+	padding-top: 0px;
+	margin-top: -5px;
+}
+
+/*フッター設定
+---------------------------------------------------------------------------*/
+footer {
+	clear: both;
+	text-align: center;
+	background: #396523;	/*背景色*/
+	color: #FFF;			/*文字色*/
+	padding-top: 15px;
+	padding-bottom: 15px;
+}
+/*copyrightの設定*/
+footer small {
+	clear: both;
+	display: block;
+}
+/*フッター内のリンク設定*/
+footer a {
+	color: #FFF;	/*文字色*/
+	text-decoration: none;
+}
+footer a:hover {
+	color: #FC0;	/*マウスオン時の文字色*/
+}
+
+
+/*inputボタンの設定
+---------------------------------------------------------------------------*/
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
+	width: 100px;	/*ボタン幅*/
+	padding: 5px;	/*ボタン内の余白*/
+	margin-top: 10px;
+	margin-bottom: 20px;
+	border-radius: 30px;	/*角丸のサイズ*/
+	background: #e5e5e5;	/*背景色（古いブラウザだとここの色のみが出ます）*/
+	background: -webkit-gradient(linear, left top, left bottom, from(#FFF), to(#e5e5e5));	/*グラデーション*/
+	background: -webkit-linear-gradient(#FFF, #e5e5e5);	/*同上*/
+	background: linear-gradient(#FFF, #e5e5e5);			/*同上*/
+	letter-spacing: 0.1em;
+	border: 1px solid #999;	/*枠線の幅、線種、色*/
+}
+/*ボタンのマウスオン時の設定*/
+input[type="submit"]:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover {
+	background: #FFF;	/*背景色（古いブラウザだとここの色のみが出ます）*/
+	background: -webkit-gradient(linear, left top, left bottom, from(#e5e5e5), to(#FFF));	/*グラデーション*/
+	background: -webkit-linear-gradient(#e5e5e5, #FFF);	/*同上*/
+	background: linear-gradient(#e5e5e5, #FFF);			/*同上*/
+}
+
+/*テーブル
+---------------------------------------------------------------------------*/
+table {
+	width: 100%;
+	margin-bottom: 15px;
+}
+table, table td, table th{
+	border: 1px solid #CCC;	/*テーブルの枠線の幅、線種、色*/
+	line-height: 2;
+}
+/*テーブル内の右側*/
+table td{
+	padding: 10px;
+}
+/*テーブル内の左側*/
+table th{
+	width: 140px;
+	padding: 10px;
+	text-align: center;
+	background: #dcdcdc;	/*背景色*/
+}
+
+/*その他
+---------------------------------------------------------------------------*/
+/* フロート崩れの防止罫線削除 */
+.clear {
+	clear:both;
+}
+
+.clear hr {
+	display:none;
+}
+/* 注意強調 */
+.error-message {
+	color:#ff0000;
+	font-weight:bold;
+	font-size:small;
+}
+
+/* ページ送りボタン */
+.paginator{
+    text-align:center;
+}
+/* 二重テーブル */
+.dtable {
+   text-align:center;
+   border:0px;
+   border-collapse:collapse;
+}
+
+.dtable td{
+	border:0px;
+    padding:0px;
+}
+
+.dtable td table td{
+	border: 1px solid #CCC;
+}
+
+/* 付箋 */
+.tags {
+	width: 100%;
+}
+.tags td{
+	width: 25%;
+	padding:0px;
+
+}
+.tag {
+	margin-bottom: 0px;
+}
+.tag div{
+	width: 100%;
+	height:30px;
+	overflow:hidden;
+}
+
+/* 精算表 */
+.moneyTable {
+	font-size:small;
+}
+.moneyTable td,.moneyTable th{
+	padding: 5px;
+	line-height: 1;
+}
+.moneyTable input{
+	width: 25%;
+}
+
+.stub {
+	width: 45%;
+	font-size:small;
+	float:left;
+}
+
+.stub td,.stub th{
+	padding: 5px;
+	line-height: 1;
+}
+
+.stub input{
+	width: 25%;
+}
+
+
+/*ここからタブレット用（481px～800px）環境の設定
+---------------------------------------------------------------------------*/
+/*表示を切り替えるウィンドウサイズの指定*/
+@media only screen and (min-width:481px) and (max-width:800px){
+
+/*コンテナー（HPを囲むブロック）
+---------------------------------------------------------------------------*/
+#container {
+	width: auto;
+	margin: 0px 15px;
+}
+
+/*上部のメインメニュー
+---------------------------------------------------------------------------*/
+/*メニュー１個ごとの設定*/
+nav#menubar ul li {
+	width: 50%;
+	margin-left: 0;
+	margin-bottom: 0px;
+	border-right: 1px solid #FFF;
+	border-bottom: 1px solid #FFF;
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+
+/*ドロップダウンメニュー用
+---------------------------------------------------------------------------*/
+ul.ddmenu {
+	display: none;	/*ドロップダウンメニューを表示させない*/
+}
+
+/*main,subコンテンツ
+---------------------------------------------------------------------------*/
+#main {
+	float: none;
+	width: auto;
+}
+
+}
+
+
+
+/*ここからスマートフォン用（480px以下）環境の設定
+---------------------------------------------------------------------------*/
+/*表示を切り替えるウィンドウサイズの指定*/
+@media (max-width : 480px){
+
+/*コンテナー（HPを囲むブロック）
+---------------------------------------------------------------------------*/
+#container {
+	width: auto;
+	margin: 0px 10px;
+}
+
+/*ヘッダー
+---------------------------------------------------------------------------*/
+/*ヘッダーブロック*/
+header {
+	height: 60px;
+}
+
+/*上部のメインメニュー
+---------------------------------------------------------------------------*/
+/*メニュー１個ごとの設定*/
+nav#menubar ul li {
+	float: none;
+	width: 100%;
+	margin-left: 0;
+	margin-bottom: 1px;
+}
+/*ドロップダウンメニュー用
+---------------------------------------------------------------------------*/
+ul.ddmenu {
+	display: none;	/*ドロップダウンメニューを表示させない*/
+}
+
+/*main,subコンテンツ
+---------------------------------------------------------------------------*/
+#main {
+	float: none;
+	width: auto;
+}
+
+/*mainコンテンツ
+---------------------------------------------------------------------------*/
+/*mainコンテンツの段落タグ設定*/
+#main p {
+	padding: 0.5em 5px 1em;	/*左から、上、左右、下への余白*/
+}
+
+
+/*テーブル１
+---------------------------------------------------------------------------*/
+table {
+	width: 100%;
+}
+/*テーブル内の右側*/
+table td{
+	width: auto;
+	padding: 2px;
+}
+/*テーブル内の左側の見出し部分*/
+table th{
+	width: 100px;
+	padding: 2px;
+}
+
+/*その他
+---------------------------------------------------------------------------*/
+/* 入力項目 */
+input {
+	width: 95%;
+}
+input[type="radio"] {
+	width: 10%;
+}
+input[type="checkbox"] {
+	width: 10%;
+}
+/* 二重テーブル */
+.dtable td{
+	display:block;
+}
+
+.dtable td table td{
+	display:table-cell;
+}
+
+/* 付箋 */
+.tag td{
+	width: 100%;
+}
+
+/* 精算表 */
+.moneyTable input{
+	width: 100%;
+}
+
+.stub {
+	width: 100%;
+	font-size:small;
+	float:none;
+}
+
+.stub input{
+	width: 100%;
+}
+
+
+}
+
+
+@media print and (min-width: 400px) {
+/*全体の設定
+---------------------------------------------------------------------------*/
+h1,h2,h3,h4,h5,p,ul,ol,li,dl,dt,dd,form,figure{
+	font-size: 80%;
+}
+table {
+	font-size: 80%;
+}
+
+body {
+	font: 80%;
+	height:80%;
+	page-break-inside:avoid;
+}
+
+#container {
+	width:100%;
+	page-break-inside:avoid;
+}
+
+nav {
+display:none;
+}
+
+footer {
+display:none;
+}
+
+h1{
+	display:inline;;	/*高さ*/
+}
+
+
+/*メインコンテンツ
+---------------------------------------------------------------------------*/
+#main {
+	padding-bottom: 0px;
+}
+/*mainコンテンツのh2タグの設定*/
+#main h2 {
+	margin-bottom: 2px;
+}
+/*mainコンテンツのh3タグの設定*/
+#main h3 {
+	margin-bottom: 2px;
+}
+
+/*テーブル
+---------------------------------------------------------------------------*/
+table {
+	margin-bottom: 2px;
+}
+table, table td, table th{
+	line-height: 1;
+}
+/*テーブル内の右側*/
+table td{
+	padding: 2px;
+}
+/*テーブル内の左側*/
+table th{
+	padding: 2px;
+}
+
+
+
+
+/*テーブル
+---------------------------------------------------------------------------*/
+table {
+	width: 100%;
+}
+/*テーブル内の右側*/
+table td{
+	width: auto;
+	padding: 2px;
+}
+/*テーブル内の左側の見出し部分*/
+table th{
+	width: 100px;
+	padding: 2px;
+}
+
+.none {
+	display:none;
+}
+
+/* 精算表 */
+.moneyTable {
+	font-size:x-small;
+}
+.stub {
+
+	width: 45%;
+	font-size:x-small;
+	float:left;
+}
+
+/* 付箋 */
+.tags {
+	width: 100%;
+}
+.tags td{
+	width: 25%;
+	padding:0px;
+
+}
+.tag {
+	margin-bottom: 0px;
+}
+.tag div{
+	width: 100%;
+	height:17px;
+	overflow:hidden;
+}
+
+

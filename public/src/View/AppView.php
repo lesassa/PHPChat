@@ -43,5 +43,8 @@ class AppView extends View
     	$this->loadHelper('Paginator', [
     			'templates' => 'app_paginator',
     	]);
+
+    	//サイト設定
+    	$this->assign('title', 'タイトル');
     }
 }
