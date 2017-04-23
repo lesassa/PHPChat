@@ -18,6 +18,7 @@ use Cake\Core\Configure;
 use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
+use Cake\ORM\TableRegistry;
 
 /**
  * Static content controller
@@ -26,7 +27,7 @@ use Cake\View\Exception\MissingTemplateException;
  *
  * @link http://book.cakephp.org/3.0/en/controllers/pages-controller.html
  */
-class ReaderController extends AppController
+class ChatController extends AppController
 {
 
     /**
@@ -40,7 +41,16 @@ class ReaderController extends AppController
      */
     public function index()
     {
+    	$RoomsDBI = TableRegistry::get('Rooms');
+    	$rooms = $RoomsDBI->find('all');
+
+    	$this->set('rooms', $rooms);
+
 
     }
 
+    public function chat($roomId)
+    {
+
+    }
 }
