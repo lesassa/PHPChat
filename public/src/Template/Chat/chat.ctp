@@ -18,11 +18,16 @@ jQuery(function ($) {
 			return;
 		}
 		conn.send(msg);
-		$("[name=chatText]").val("");
+		$("[name=chatText]").val(null);
 	}
 
 	//イベント
-	$("#send").click(send);
+	$("[name=chatText]").on("keydown", function(e) {
+	if(typeof e.keyCode === "undefined" || e.keyCode === 13) {
+		send();
+	}
+});
+	$("#send").click();
 });
 
 </script>
