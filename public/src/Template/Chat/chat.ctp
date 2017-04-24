@@ -1,5 +1,8 @@
 <script>
+
+//Websocket接続
 var conn = new WebSocket('ws:localhost:8080');
+
 jQuery(function ($) {
 	conn.onopen = function(e) {
 	    console.log("Connection established!");
@@ -15,19 +18,25 @@ jQuery(function ($) {
 		var msg = $("[name=chatText]").val();
 		//入力チェック
 		if(msg == "") {
-			return;
+			return false;
 		}
 		conn.send(msg);
-		$("[name=chatText]").val(null);
+		$("[name=chatText]").val('');
 	}
 
 	//イベント
 	$("[name=chatText]").on("keydown", function(e) {
-	if(typeof e.keyCode === "undefined" || e.keyCode === 13) {
-		send();
-	}
-});
-	$("#send").click();
+		//エンターを押下
+		if(e.keyCode === 13) {
+			//シフト＋エンターは送信しない
+			if (e.shiftKey) {
+				return true;
+			}
+			send();
+			return false;
+		}
+	});
+	$("#send").click(send);
 });
 
 </script>
