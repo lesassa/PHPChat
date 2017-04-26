@@ -6,12 +6,30 @@ var conn = new WebSocket('ws:localhost:8080');
 jQuery(function ($) {
 	conn.onopen = function(e) {
 	    console.log("Connection established!");
-	    $("#chat").append("Connection established!<br/>");
+	    $("#status").append("Connection established!<br/>");
 	};
 
 	conn.onmessage = function(e) {
 	    console.log(e.data);
-	    $("#chat").append(e.data + "<br/>");
+	    var data = e.data.split(",");
+	    var roomId = data[0].split(":");
+	    var chatNumber = data[1].split(":");
+	    $.ajax({
+	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'getChat'], true); ?>",
+	        type: "POST",
+	        data: {
+		        	roomId : roomId[1],
+		        	chatNumber : chatNumber[1],
+		         },
+	        success : function(response){
+	            //通信成功時の処理
+	    		$("#chat").append(response);
+	        },
+	        error: function(response){
+	            //通信失敗時の処理
+	            alert('通信失敗');
+	        }
+	    });
 	};
 
 	//イベント
@@ -40,16 +58,13 @@ jQuery(function ($) {
 	        data: { chatText : msg },
 	        success : function(response){
 	            //通信成功時の処理
-	    		conn.send(msg);
+	    		conn.send(response);
 	    		$("[name=chatText]").val('');
-	    		$("#chat").append(response);
-
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
 	            alert('通信失敗');
-	            $("[name=chatText]").val(response);
-	        }
+	            $("[name=chatText]").val(response);	        }
 	    });
 	}
 });
@@ -58,7 +73,8 @@ jQuery(function ($) {
 
 </script>
 <h2>チャット</h2>
-<p id="chat"></p>
+<p id="status"></p>
+<div id="chats"></div>
 
 <?=$this->Form->create(null,['type' => 'post']) ?>
 <table>
