@@ -53,4 +53,22 @@ class ChatController extends AppController
     {
 
     }
+
+    public function addChat()
+    {
+//     	$this->autoRender = FALSE;
+    	if($this->request->is('ajax')) {
+	    	$ChatsDBI = TableRegistry::get('Chats');
+	    	$chat = $ChatsDBI->newEntity();
+	    	$chat->roomId = 1;
+	    	$query = $ChatsDBI->find();
+	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
+	    	$chat->chatNumber = $ret->max_id + 1;
+	    	$chat->memberId = 1;
+	    	$chat->chatText = $this->request->data["chatText"];
+	    	$ChatsDBI->save($chat);
+	    	$this->set('chat', $chat);
+    	}
+
+    }
 }

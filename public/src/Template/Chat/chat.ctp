@@ -14,16 +14,6 @@ jQuery(function ($) {
 	    $("#chat").append(e.data + "<br/>");
 	};
 
-	function send() {
-		var msg = $("[name=chatText]").val();
-		//入力チェック
-		if(msg == "") {
-			return false;
-		}
-		conn.send(msg);
-		$("[name=chatText]").val('');
-	}
-
 	//イベント
 	$("[name=chatText]").on("keydown", function(e) {
 		//エンターを押下
@@ -37,7 +27,34 @@ jQuery(function ($) {
 		}
 	});
 	$("#send").click(send);
+
+	function send() {
+		var msg = $("[name=chatText]").val();
+		//入力チェック
+		if(msg == "") {
+			return false;
+		}
+	    $.ajax({
+	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat'], true); ?>",
+	        type: "POST",
+	        data: { chatText : msg },
+	        success : function(response){
+	            //通信成功時の処理
+	    		conn.send(msg);
+	    		$("[name=chatText]").val('');
+	    		$("#chat").append(response);
+
+	        },
+	        error: function(response){
+	            //通信失敗時の処理
+	            alert('通信失敗');
+	            $("[name=chatText]").val(response);
+	        }
+	    });
+	}
 });
+
+
 
 </script>
 <h2>チャット</h2>

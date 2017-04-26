@@ -23,9 +23,6 @@ class Chat implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
 
-    	//業務アプリ起動（シェル）
-    	$msg .= exec(dirname(dirname(__DIR__)).'\bin\cake chat hey_there test');
-
         $numRecv = count($this->clients) - 1;
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
