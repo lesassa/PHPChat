@@ -70,16 +70,8 @@ class ChatController extends AppController
 	    	$msg["chatNumber"] = $chat->chatNumber;
 	    	$msg["chatText"] = $chat->chatText;
 	    	$msg["memberId"] = $chat->memberId;
+	    	$msg["memberName"] = "匿名さん";
 	    	echo json_encode($msg);
-    	}
-    }
-
-    public function getChat()
-    {
-    	if($this->request->is('ajax')) {
-    		$ChatsDBI = TableRegistry::get('Chats');
-    		$chat = $ChatsDBI->get([$this->request->data["roomId"], $this->request->data["chatNumber"]]);
-    		$this->set('chat', $chat);
     	}
     }
 }

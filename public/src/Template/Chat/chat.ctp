@@ -27,7 +27,16 @@ jQuery(function ($) {
 	    console.log(e.data);
 	    var msg = JSON.parse(e.data);
 
-	    $("#chats").append(String(msg["roomId"]) + String(msg["chatNumber"]) + String(msg["memberId"]) + msg["chatText"]);
+	    var chat = [
+	        "<p>",
+	        String(msg["chatNumber"]) + ":",
+	        String(msg["memberName"]),
+	        " ＜ " + msg["chatText"],
+	        "<br>",
+	        "</p>",
+	        "<hr>",
+	    ].join("");
+	    $("#chats").append(chat);
 	};
 
 	//イベント
