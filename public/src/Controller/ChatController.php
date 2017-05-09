@@ -59,18 +59,18 @@ class ChatController extends AppController
 	    	$ChatsDBI = TableRegistry::get('Chats');
 	    	$chat = $ChatsDBI->newEntity();
 	    	$chat->roomId = 1;
-	    	$msg["roomId"] = 1;
 	    	$query = $ChatsDBI->find();
 	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
 	    	$chat->chatNumber = $ret->max_id + 1;
-	    	$msg["chatNumber"] = $ret->max_id + 1;
 	    	$chat->memberId = 1;
-	    	$msg["memberId"] = 1;
 	    	$chat->chatText = $this->request->data["chatText"];
-	    	$msg["chatText"] = $this->request->data["chatText"];
 	    	$ChatsDBI->save($chat);
-	    	json_encode(Security::htmlentities($msg));
-	    	return $msg;
+
+	    	$msg["roomId"] = $chat->roomId;
+	    	$msg["chatNumber"] = $chat->chatNumber;
+	    	$msg["chatText"] = $chat->chatText;
+	    	$msg["memberId"] = $chat->memberId;
+	    	echo json_encode($msg);
     	}
     }
 
