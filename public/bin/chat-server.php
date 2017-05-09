@@ -12,7 +12,7 @@ use MyApp\Chat;
                 new Chat()
             )
         ),
-        8080
+			443
     );
- 
+
     $server->run();

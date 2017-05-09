@@ -1,6 +1,4 @@
 <div>
-	roomId:<?=$chat->roomId ?><br>
-	chatNumber:<?=$chat->chatNumber ?><br>
-	memberId:<?=$chat->memberId ?><br>
-	chatText:<?=$chat->chatText ?><br>
+	<?=$chat->chatNumber ?>　匿名さん＜<?=$chat->chatText ?><br>
+	<hr>
 </div>

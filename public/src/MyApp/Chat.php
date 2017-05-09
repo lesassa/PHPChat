@@ -23,6 +23,11 @@ class Chat implements MessageComponentInterface {
 
     public function onMessage(ConnectionInterface $from, $msg) {
 
+    	//ピン送信の場合は何もしない
+    	if ($msg == "ping") {
+    		return;
+    	}
+
         $numRecv = count($this->clients) - 1;
         echo sprintf('Connection %d sending message "%s" to %d other connection%s' . "\n"
             , $from->resourceId, $msg, $numRecv, $numRecv == 1 ? '' : 's');
@@ -37,6 +42,7 @@ class Chat implements MessageComponentInterface {
     }
 
     public function onClose(ConnectionInterface $conn) {
+
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 

@@ -1,35 +1,54 @@
 <script>
 
 //Websocket接続
-var conn = new WebSocket('ws:localhost:8080');
+var conn = new WebSocket('ws:172.19.122.53:443');
+
 
 jQuery(function ($) {
 	conn.onopen = function(e) {
 	    console.log("Connection established!");
 	    $("#status").append("Connection established!<br/>");
+	    countup();
+	};
+
+	conn.onclose = function(e) { /* 切断時の処理 */
+
+
+		if(e.code == "1006") {
+
+		} else {
+
+		   	$("#status").append("DisConnection<br/>");
+		   	$("#status").append(e.code);
+	   	}
 	};
 
 	conn.onmessage = function(e) {
 	    console.log(e.data);
-	    var data = e.data.split(",");
-	    var roomId = data[0].split(":");
-	    var chatNumber = data[1].split(":");
+//	    var data = e.data.split(",");
+//	    var roomId = data[0].split(":");
+//	    var chatNumber = data[1].split(":");
+	    var msg = JSON.parse(e.data);
 	    $.ajax({
 	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'getChat'], true); ?>",
 	        type: "POST",
 	        data: {
-		        	roomId : roomId[1],
-		        	chatNumber : chatNumber[1],
+		        	roomId : msg["roomId"],
+		        	chatNumber : msg["chatNumber"],
 		         },
 	        success : function(response){
 	            //通信成功時の処理
-	    		$("#chat").append(response);
+	    		$("#chats").append(response);
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
 	            alert('通信失敗');
 	        }
 	    });
+	};
+
+	conn.onerror = function(e) {
+		console.log(e);
 	};
 
 	//イベント
@@ -67,6 +86,12 @@ jQuery(function ($) {
 	            $("[name=chatText]").val(response);	        }
 	    });
 	}
+
+	var countup = function(){
+	    conn.send("ping");
+	    setTimeout(countup, 180000);
+	  }
+
 });
 
 
