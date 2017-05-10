@@ -54,6 +54,7 @@ class ChatController extends AppController
     	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $roomId])->first();
     	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members']);
     	$this->set('chats', $chats);
+    	$this->set('roomId', $roomId);
     }
 
     public function addChat()
@@ -62,7 +63,7 @@ class ChatController extends AppController
     	if($this->request->is('ajax')) {
 	    	$ChatsDBI = TableRegistry::get('Chats');
 	    	$chat = $ChatsDBI->newEntity();
-	    	$chat->roomId = 1;
+	    	$chat->roomId = $this->request->data["roomId"];;
 	    	$query = $ChatsDBI->find();
 	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
 	    	$chat->chatNumber = $ret->max_id + 1;

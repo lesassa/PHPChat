@@ -26,6 +26,12 @@ jQuery(function ($) {
 	conn.onmessage = function(e) {
 	    console.log(e.data);
 	    var msg = JSON.parse(e.data);
+	    var roomId = $("[name=roomId]").val();
+
+	    //同室のチャットではない場合は何もしない
+	    if (roomId != String(msg["roomId"])) {
+		    return;
+	    }
 
 	    var chat = [
 	        "<hr>",
@@ -54,6 +60,7 @@ jQuery(function ($) {
 
 	function send() {
 		var msg = $("[name=chatText]").val();
+		var roomId = $("[name=roomId]").val();
 		//入力チェック
 		if(msg == "") {
 			return false;
@@ -61,7 +68,9 @@ jQuery(function ($) {
 	    $.ajax({
 	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat'], true); ?>",
 	        type: "POST",
-	        data: { chatText : msg },
+	        data: { chatText : msg,
+	        		roomId : roomId,
+		         },
 	        success : function(response){
 	            //通信成功時の処理
 	    		conn.send(response);
@@ -94,8 +103,10 @@ jQuery(function ($) {
 </div>
 
 <?=$this->Form->create(null,['type' => 'post']) ?>
+<?=$this->Form->input("roomId", ["type" => "hidden", "value" => $roomId]) ?>
 <table>
 	<tr><td><?=$this->Form->input("chatText", ["type" => "textarea",]) ?></td></tr>
 	<tr><td><?=$this->Form->input("send", ["type" => "button",]) ?></td></tr>
 </table>
 <?=$this->Form->end() ?>
+<?=$this->Html->link("ルーム一覧へ", ['controller'=>'Chat', 'action'=>'index']); ?>
