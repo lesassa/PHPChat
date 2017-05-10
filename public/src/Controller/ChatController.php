@@ -49,6 +49,12 @@ class ChatController extends AppController
 
     public function chat($roomId)
     {
+    	$ChatsDBI = TableRegistry::get('Chats');
+    	$query = $ChatsDBI->find();
+    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $roomId])->first();
+    	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >=" => $ret->max_id - 10]);
+    	$this->set('chats', $chats);
+
 
     }
 

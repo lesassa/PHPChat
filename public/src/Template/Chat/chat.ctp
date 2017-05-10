@@ -28,13 +28,13 @@ jQuery(function ($) {
 	    var msg = JSON.parse(e.data);
 
 	    var chat = [
+	        "<hr>",
 	        "<p>",
 	        String(msg["chatNumber"]) + ":",
 	        String(msg["memberName"]),
 	        " ＜ " + msg["chatText"],
 	        "<br>",
 	        "</p>",
-	        "<hr>",
 	    ].join("");
 	    $("#chats").append(chat);
 	};
@@ -88,7 +88,11 @@ jQuery(function ($) {
 </script>
 <h2>チャット</h2>
 <p id="status"></p>
-<div id="chats"></div>
+<div id="chats">
+<?php foreach($chats as $chat): ?>
+
+<?php endforeach; ?>
+</div>
 
 <?=$this->Form->create(null,['type' => 'post']) ?>
 <table>
