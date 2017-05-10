@@ -1,6 +1,2 @@
 <hr>
-<p><?=$chat ?>:",
-String(msg["memberName"]),
-" ＜ " + msg["chatText"],
-"<br>",
-"</p>",
+<p><?=$chat->chatNumber ?>:匿名さん ＜ <?=$chat->chatText ?></p>

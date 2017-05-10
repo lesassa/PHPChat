@@ -33,7 +33,6 @@ jQuery(function ($) {
 	        String(msg["chatNumber"]) + ":",
 	        String(msg["memberName"]),
 	        " ＜ " + msg["chatText"],
-	        "<br>",
 	        "</p>",
 	    ].join("");
 	    $("#chats").append(chat);
@@ -89,9 +88,9 @@ jQuery(function ($) {
 <h2>チャット</h2>
 <p id="status"></p>
 <div id="chats">
-<?php foreach($chats as $chat): ?>
-
-<?php endforeach; ?>
+	<?php foreach($chats as $chat): ?>
+		<?= $this->element('chat', ['chat'=>$chat]) ?>
+	<?php endforeach; ?>
 </div>
 
 <?=$this->Form->create(null,['type' => 'post']) ?>
