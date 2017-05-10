@@ -34,7 +34,7 @@ jQuery(function ($) {
 	        String(msg["memberName"]),
 	        " ＜ " + msg["chatText"],
 	        "</p>",
-	    ].join("");
+	    ].join("").replace(/\n/g, "<br />");
 	    $("#chats").append(chat);
 	};
 
