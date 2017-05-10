@@ -28,6 +28,8 @@ use Cake\Event\Event;
 class AppController extends Controller
 {
 
+	public $loginTable;
+
     /**
      * Initialization hook method.
      *
@@ -50,6 +52,42 @@ class AppController extends Controller
          */
         //$this->loadComponent('Security');
         //$this->loadComponent('Csrf');
+
+        $this->Session = $this->request->session();
+        $this->loadComponent('Auth', [ // Authコンポーネントの読み込み
+        		'authenticate' => [
+        				'Form' => [ // 認証の種類を指定。Form,Basic,Digestが使える。デフォルトはForm
+        						'userModel' => 'Login',
+        						'fields' => [ // ユーザー名とパスワードに使うカラムの指定。省略した場合はusernameとpasswordになる
+        								'username' => 'loginId', // ユーザー名のカラムを指定
+        								'password' => 'password' //パスワードに使うカラムを指定
+        						],
+
+        				]
+        		],
+        		'loginAction' => [
+        				'controller' => 'Reader',
+        				'action' => 'login'
+        		],
+        		'loginRedirect' => [ // ログイン後に遷移するアクションを指定
+        				'controller' => 'Chat',
+        				'action' => 'index'
+        		],
+        		'logoutRedirect' => [ // ログアウト後に遷移するアクションを指定
+        				'controller' => 'Reader',
+        				'action' => 'login',
+        		],
+        		'authError' => 'ログインできませんでした。ログインしてください。', // ログインに失敗したときのFlashメッセージを指定(省略可)
+        ]);
+
+        $this->loginTable = new \StdClass();
+        if ($this->Session->check("loginTable")){
+        	$this->loginTable = $this->Session->read("loginTable");
+        } else {
+        	$this->loginTable->memberName = "ゲスト";
+        	$this->loginTable->memberId = GUEST_ID;
+        }
+        $this->set('loginTable', $this->loginTable);
 
 //         $loginTable->memberName = "";
 //         $this->set('loginTable', $loginTable);

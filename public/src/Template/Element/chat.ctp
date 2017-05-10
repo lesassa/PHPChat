@@ -1,2 +1,2 @@
 <hr>
-<p><?=$chat->chatNumber ?>:匿名さん ＜ <?=$chat->chatText ?></p>
+<p><?=$chat->chatNumber ?>:<?=$chat->member->memberName ?> ＜ <?=$chat->chatText ?></p>

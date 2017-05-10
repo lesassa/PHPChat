@@ -52,10 +52,8 @@ class ChatController extends AppController
     	$ChatsDBI = TableRegistry::get('Chats');
     	$query = $ChatsDBI->find();
     	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $roomId])->first();
-    	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >" => $ret->max_id - 10]);
+    	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members']);
     	$this->set('chats', $chats);
-
-
     }
 
     public function addChat()
@@ -68,7 +66,7 @@ class ChatController extends AppController
 	    	$query = $ChatsDBI->find();
 	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
 	    	$chat->chatNumber = $ret->max_id + 1;
-	    	$chat->memberId = 1;
+	    	$chat->memberId = $this->loginTable->memberId;
 	    	$chat->chatText = $this->request->data["chatText"];
 	    	$ChatsDBI->save($chat);
 
@@ -76,7 +74,7 @@ class ChatController extends AppController
 	    	$msg["chatNumber"] = $chat->chatNumber;
 	    	$msg["chatText"] = $chat->chatText;
 	    	$msg["memberId"] = $chat->memberId;
-	    	$msg["memberName"] = "匿名さん";
+	    	$msg["memberName"] = $this->loginTable->memberName;
 	    	echo json_encode($msg);
     	}
     }

@@ -33,6 +33,11 @@ class ChatsTable extends Table
         $this->setTable('chats');
         $this->setDisplayField('roomId');
         $this->setPrimaryKey(['roomId', 'chatNumber']);
+
+		$this->belongsTo('Members', [
+			'className' => 'Members',
+			'foreignKey' => 'memberId',
+		]);
     }
 
     /**
