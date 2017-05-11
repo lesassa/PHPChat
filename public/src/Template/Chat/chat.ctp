@@ -25,6 +25,11 @@ jQuery(function ($) {
 
 	conn.onmessage = function(e) {
 	    console.log(e.data);
+
+	    if (!isNaN(e.data)) {
+	    	$("#chats").append("ようこそ" + e.data);
+	    }
+
 	    var msg = JSON.parse(e.data);
 	    var roomId = $("[name=roomId]").val();
 
@@ -61,6 +66,7 @@ jQuery(function ($) {
 	function send() {
 		var msg = $("[name=chatText]").val();
 		var roomId = $("[name=roomId]").val();
+		$("[name=chatText]").val('');
 		//入力チェック
 		if(msg == "") {
 			return false;
@@ -74,7 +80,6 @@ jQuery(function ($) {
 	        success : function(response){
 	            //通信成功時の処理
 	    		conn.send(response);
-	    		$("[name=chatText]").val('');
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
