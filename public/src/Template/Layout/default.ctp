@@ -28,7 +28,8 @@
 		<!-- /ヘッダー -->
 
 		<!-- メニュー -->
-		<nav id="menubar">
+		<nav>
+			<?= $this->element('menu') ?>
 		</nav>
 		<!-- /メニュー -->
 
