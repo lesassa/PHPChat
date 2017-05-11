@@ -49,11 +49,22 @@ class ChatController extends AppController
 
     public function chat($roomId)
     {
-    	$ChatsDBI = TableRegistry::get('Chats');
-    	$query = $ChatsDBI->find();
-    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $roomId])->first();
-    	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members']);
-    	$this->set('chats', $chats);
+
+    	$RoomsDBI = TableRegistry::get('Rooms');
+    	$rooms = $RoomsDBI->find('all');
+
+    	$roomsWithChats = array();
+    	foreach ($rooms as $room) {
+
+	    	$ChatsDBI = TableRegistry::get('Chats');
+	    	$query = $ChatsDBI->find();
+	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $room->roomId])->first();
+	    	$chats = $ChatsDBI->find()->where(["roomId =" => $room->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members']);
+	    	$room->chats = $chats;
+	    	$roomsWithChats[$room->roomId] = $room;
+
+    	}
+    	$this->set('rooms', $roomsWithChats);
     	$this->set('roomId', $roomId);
     }
 

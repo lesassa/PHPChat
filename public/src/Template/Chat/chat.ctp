@@ -14,27 +14,17 @@ jQuery(function ($) {
 	};
 
 	conn.onclose = function(e) { /* 切断時の処理 */
-
-
-		if(e.code == "1006") {
-
-		} else {
-
-		   	$("#status").append("DisConnection<br/>");
-		   	$("#status").append(e.code);
-	   	}
 	};
 
 	conn.onmessage = function(e) {
 	    console.log(e.data);
 
 	    if (!isNaN(e.data)) {
-	    	var roomId = $("[name=roomId]").val();
 		    $.ajax({
 		        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'enter'], true); ?>",
 		        type: "POST",
 		        data: { resourceId : e.data,
-	        			roomId : roomId,
+	        			roomId : room,
 			         },
 		        success : function(response){
 		            //通信成功時の処理
@@ -48,13 +38,6 @@ jQuery(function ($) {
 	    }
 
 	    var msg = JSON.parse(e.data);
-	    var roomId = $("[name=roomId]").val();
-
-	    //同室のチャットではない場合は何もしない
-	    if (roomId != String(msg["roomId"])) {
-		    return;
-	    }
-
 	    var chat = [
 	        "<hr>",
 	        "<p>",
@@ -63,7 +46,7 @@ jQuery(function ($) {
 	        " ＜ " + msg["chatText"],
 	        "</p>",
 	    ].join("").replace(/\n/g, "<br />");
-	    $("#chats").append(chat);
+	    $("#chats" + msg["roomId"]).append(chat);
 	};
 
 	//イベント
@@ -82,7 +65,6 @@ jQuery(function ($) {
 
 	function send() {
 		var msg = $("[name=chatText]").val();
-		var roomId = $("[name=roomId]").val();
 		$("[name=chatText]").val('');
 		//入力チェック
 		if(msg == "") {
@@ -92,7 +74,7 @@ jQuery(function ($) {
 	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat'], true); ?>",
 	        type: "POST",
 	        data: { chatText : msg,
-	        		roomId : roomId,
+	        		roomId : room,
 		         },
 	        success : function(response){
 	            //通信成功時の処理
@@ -111,6 +93,18 @@ jQuery(function ($) {
 	    setTimeout(ping, 180000);
 	  }
 
+	$(document).ready(function(){
+		$("[id^=room]").hide();
+		$("#room<?=$roomId ?>").show();
+	});
+
+	var room = "<?=$roomId ?>";
+	$("[class^=room]").click(function(event) {
+		var roomId  = $(this).attr("class");
+		$("[id^=room]").hide();
+		$("#" + roomId).show();
+		room = roomId.slice(4);
+	});
 });
 
 
@@ -118,14 +112,10 @@ jQuery(function ($) {
 </script>
 <h2>チャット</h2>
 <p id="status"></p>
-<div id="chats">
-	<?php foreach($chats as $chat): ?>
-		<?= $this->element('chat', ['chat'=>$chat]) ?>
-	<?php endforeach; ?>
-</div>
-
+<?php foreach($rooms as $room): ?>
+	<?= $this->element('room', ['roomId'=> $room->roomId, 'chats'=> $room->chats]) ?>
+<?php endforeach; ?>
 <?=$this->Form->create(null,['type' => 'post']) ?>
-<?=$this->Form->input("roomId", ["type" => "hidden", "value" => $roomId]) ?>
 <table>
 	<tr><td><?=$this->Form->input("chatText", ["type" => "textarea",]) ?></td></tr>
 	<tr><td><?=$this->Form->input("send", ["type" => "button",]) ?></td></tr>

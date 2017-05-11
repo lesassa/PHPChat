@@ -83,7 +83,7 @@ nav div {
 	background: #396523;
 	margin-bottom: 10px;
 }
-nav div a {
+nav div p {
 	display: block;
 	font-weight: bold;
 	text-decoration: none;
@@ -97,34 +97,14 @@ nav div a {
 	-webkit-box-sizing:border-box; /* Chrome, Safari */
 	-webkit-transition: 0.5s;	/* マウスオン時の移り変わるまでの時間設定。0.5秒。 */
 	transition: 0.5s;			/* 同上 */
+	cursor:pointer;
 }
 
 /*マウスオン時の設定 */
-nav div a:hover {
+nav div p:hover {
 	background: #000;
 	color: #FFF;
 }
-
-/*ドロップダウンメニュー用
----------------------------------------------------------------------------*/
-ul.ddmenu {
-	position:absolute;
-	visibility: hidden;
-    z-index: 10;
-	width: 239px;	/*上の「nav#menubar ul li」の「width」の値と揃えておく*/
-}
-ul.ddmenu li {
-	margin: 0 !important;
-}
-ul.ddmenu li a {
-	border-top: solid 1px #FFF;	/*上の線の幅、線種、色。ここでは白にしてメニュー間の境界線として使用。*/
-	background: #396523 !important;	/*背景色*/
-	padding: 3px 0px !important;	/*メニュー１段分の高さを少し狭くする設定。トップのメニューと同じサイズがいいならこの行削除。*/
-}
-ul.ddmenu li a:hover {
-	background: #000 !important;	/*マウスオン時の背景色*/
-}
-
 
 /*メインコンテンツ
 ---------------------------------------------------------------------------*/
