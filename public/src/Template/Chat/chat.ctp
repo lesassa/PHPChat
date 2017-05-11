@@ -5,6 +5,8 @@ var conn = new WebSocket('ws:' + document.domain + ':443');
 
 
 jQuery(function ($) {
+
+
 	conn.onopen = function(e) {
 	    console.log("Connection established!");
 	    $("#status").append("Connection established!<br/>");
@@ -27,7 +29,22 @@ jQuery(function ($) {
 	    console.log(e.data);
 
 	    if (!isNaN(e.data)) {
-	    	$("#chats").append("ようこそ" + e.data);
+	    	var roomId = $("[name=roomId]").val();
+		    $.ajax({
+		        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'enter'], true); ?>",
+		        type: "POST",
+		        data: { resourceId : e.data,
+	        			roomId : roomId,
+			         },
+		        success : function(response){
+		            //通信成功時の処理
+		        	$("#chats").append("ようこそ" + response);
+		        },
+		        error: function(response){
+		            //通信失敗時の処理
+		            alert('通信失敗');
+		        }
+		    });
 	    }
 
 	    var msg = JSON.parse(e.data);

@@ -29,6 +29,7 @@ class AppController extends Controller
 {
 
 	public $loginTable;
+	public $Log;
 
     /**
      * Initialization hook method.
@@ -53,6 +54,7 @@ class AppController extends Controller
         //$this->loadComponent('Security');
         //$this->loadComponent('Csrf');
 
+        $this->Log = $this->loadComponent('Log',[get_class($this)]);
         $this->Session = $this->request->session();
         $this->loadComponent('Auth', [ // Authコンポーネントの読み込み
         		'authenticate' => [

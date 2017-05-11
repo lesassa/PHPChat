@@ -79,4 +79,18 @@ class ChatController extends AppController
 	    	echo json_encode($msg);
     	}
     }
+
+
+    public function enter()
+    {
+    	$this->autoRender = FALSE;
+    	if($this->request->is('ajax')) {
+	    	$ParticipantsDBI = TableRegistry::get('Participants');
+	    	$participant = $ParticipantsDBI->newEntity($this->request->data);
+	    	$participant->memberId= $this->loginTable->memberId;
+	    	if ($ParticipantsDBI->save($participant)) {
+	    		echo $this->loginTable->memberName;
+	    	}
+    	}
+    }
 }
