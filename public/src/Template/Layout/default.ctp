@@ -41,6 +41,7 @@
 			<?= $this->fetch('content') ?>
 		</div></div>
 		<div id="login">
+			<div id="title">参加者</div>
 		</div>
 		<!-- /メイン -->
 

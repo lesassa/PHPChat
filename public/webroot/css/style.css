@@ -108,13 +108,38 @@ nav div p:hover {
 
 /*ログインコンテンツ
 ---------------------------------------------------------------------------*/
-.login {
+#login {
 	float: right;
 	width: 19%;
-	padding-top: 80px;
+	margin-top: 80px;
 	margin-left: 1%;
+	border: none;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box; /* Firefox */
+	-webkit-box-sizing:border-box; /* Chrome, Safari */
+    border-radius: 10px;        /* CSS3草案 */
+    -webkit-border-radius: 10px;    /* Safari,Google Chrome用 */
+    -moz-border-radius: 10px;   /* Firefox用 */
 }
 
+#login div{
+	font-weight: bold;
+
+	padding-left: 10px;
+	border:solid;
+	border-color:#396523;
+}
+
+#login #title{
+	border:none;
+	-webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+	text-align: center;
+	background: #396523;
+	color: #FFF;
+}
 
 /*メインコンテンツ
 ---------------------------------------------------------------------------*/
