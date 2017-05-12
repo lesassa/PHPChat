@@ -36,6 +36,7 @@ class ReaderController extends AppController
 
 	public function login()
     {
+    	$this->viewBuilder()->layout('defaultLogin');
 		//初期化
     	$errorMessage = "";
 

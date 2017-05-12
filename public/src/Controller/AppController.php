@@ -73,7 +73,8 @@ class AppController extends Controller
         		],
         		'loginRedirect' => [ // ログイン後に遷移するアクションを指定
         				'controller' => 'Chat',
-        				'action' => 'index'
+        				'action' => 'chat',
+        				1
         		],
         		'logoutRedirect' => [ // ログアウト後に遷移するアクションを指定
         				'controller' => 'Reader',
