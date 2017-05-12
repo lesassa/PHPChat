@@ -52,6 +52,10 @@ class ChatController extends AppController
     	$this->set('rooms', $roomsWithChats);
     	$this->set('roomId', 1);
     	$this->set('loginTable', $this->loginTable);
+
+    	$ParticipantsDBI = TableRegistry::get('Participants');
+    	$participants = $ParticipantsDBI->find("all")->contain(['Members']);;
+    	$this->set('participants', $participants);
     }
 
     public function addChat()

@@ -45,7 +45,11 @@ jQuery(function ($) {
 
 	  	//ログイン情報を受信した場合
 		if (msg.resourceId) {
-			$("[id^=chats]").append(String(msg["memberName"]) + "ログインしました");
+			var login = [
+				msg["memberName"],
+				"<br/>",
+		    ].join("")
+			$("#login").append(login);
 			return;
 		}
 

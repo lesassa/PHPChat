@@ -33,6 +33,11 @@ class ParticipantsTable extends Table
         $this->setTable('participants');
         $this->setDisplayField('memberId');
         $this->setPrimaryKey('memberId');
+
+        $this->hasOne('Members', [
+        		'className' => 'Members',
+        		'foreignKey' => 'memberId',
+        ]);
     }
 
     /**
