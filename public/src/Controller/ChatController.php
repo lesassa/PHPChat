@@ -30,24 +30,9 @@ use Cake\ORM\TableRegistry;
 class ChatController extends AppController
 {
 
-    /**
-     * Displays a view
-     *
-     * @param string ...$path Path segments.
-     * @return void|\Cake\Network\Response
-     * @throws \Cake\Network\Exception\ForbiddenException When a directory traversal attempt.
-     * @throws \Cake\Network\Exception\NotFoundException When the view file could not
-     *   be found or \Cake\View\Exception\MissingTemplateException in debug mode.
-     */
+
+
     public function index()
-    {
-    	$RoomsDBI = TableRegistry::get('Rooms');
-    	$rooms = $RoomsDBI->find('all');
-
-    	$this->set('rooms', $rooms);
-    }
-
-    public function chat($roomId)
     {
 
     	$RoomsDBI = TableRegistry::get('Rooms');
@@ -65,7 +50,8 @@ class ChatController extends AppController
 
     	}
     	$this->set('rooms', $roomsWithChats);
-    	$this->set('roomId', $roomId);
+    	$this->set('roomId', 1);
+    	$this->set('loginTable', $this->loginTable);
     }
 
     public function addChat()
