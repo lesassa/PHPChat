@@ -41,9 +41,6 @@
 			<?= $this->fetch('content') ?>
 		</div></div>
 		<div id="login">
-			<?php foreach($participants as $participant): ?>
-				<?=$participant->member->memberName ?><br/>
-			<?php endforeach; ?>
 		</div>
 		<!-- /メイン -->
 

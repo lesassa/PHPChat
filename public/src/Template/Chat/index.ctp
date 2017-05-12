@@ -46,10 +46,17 @@ jQuery(function ($) {
 	  	//ログイン情報を受信した場合
 		if (msg.resourceId) {
 			var login = [
+				"<div id=\"resource" + msg["resourceId"] +"\">",
 				msg["memberName"],
-				"<br/>",
+				"</div>",
 		    ].join("")
 			$("#login").append(login);
+			return;
+		}
+
+	  	//ログアウト情報を受信した場合
+		if (msg.logoutId) {
+			$("#resource" + msg.logoutId).remove();
 			return;
 		}
 
@@ -113,6 +120,37 @@ jQuery(function ($) {
 	$(document).ready(function(){
 		$("[id^=room]").hide();
 		$("#room<?=$roomId ?>").show();
+	});
+
+	//現ログイン情報取得
+	$(document).ready(function(){
+	    $.ajax({
+	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'getParticipants'], true); ?>",
+	        type: "POST",
+	        data: { roomId : room,
+		         },
+	        success : function(response){
+	            //通信成功時の処理
+	        	var participants = JSON.parse(response);
+	        	for (var i = 0; i < participants.length; i++) {
+		        	var participant = participants[i];
+					var login = [
+						"<div id=\"resource" + participant["resourceId"] +"\">",
+						participant["memberName"],
+						"</div>",
+				    ].join("")
+					$("#login").append(login);
+	        	}
+				return;
+
+	        },
+	        error: function(response){
+	            //通信失敗時の処理
+	            alert('通信失敗');
+	            return;
+	        }
+	    });
+
 	});
 
 	var room = "<?=$roomId ?>";

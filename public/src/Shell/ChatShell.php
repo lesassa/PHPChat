@@ -5,6 +5,7 @@ use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
 use Cake\Log\Log;
 use Psy\Shell as PsyShell;
+use Cake\ORM\TableRegistry;
 
 class ChatShell extends Shell
 {
@@ -14,9 +15,16 @@ class ChatShell extends Shell
     	echo  "success";
     }
 
-    public function heyThere($name)
+    public function logout($resourceId)
     {
-    	echo 'Hey there ' . $name;
+    	$ParticipantsDBI = TableRegistry::get('Participants');
+    	$participants = $ParticipantsDBI->find()->where(['resourceId =' => $resourceId]);
+    	foreach ($participants as $participant) {
+    		$ParticipantsDBI->delete($participant);
+    	}
+
+
+    	echo "success";
     }
 
 }

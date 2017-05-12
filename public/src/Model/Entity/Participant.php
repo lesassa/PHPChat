@@ -24,6 +24,8 @@ class Participant extends Entity
      */
     protected $_accessible = [
         '*' => true,
-        'memberId' => false
+        'memberId' => false,
+    	'roomId' => true,
+    	'resourceId' => true
     ];
 }

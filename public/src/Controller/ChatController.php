@@ -53,9 +53,7 @@ class ChatController extends AppController
     	$this->set('roomId', 1);
     	$this->set('loginTable', $this->loginTable);
 
-    	$ParticipantsDBI = TableRegistry::get('Participants');
-    	$participants = $ParticipantsDBI->find("all")->contain(['Members']);;
-    	$this->set('participants', $participants);
+
     }
 
     public function addChat()
@@ -92,6 +90,25 @@ class ChatController extends AppController
 	    	if ($ParticipantsDBI->save($participant)) {
 	    		echo $this->loginTable->memberName;
 	    	}
+    	}
+    }
+
+    public function getParticipants()
+    {
+    	$this->autoRender = FALSE;
+    	if($this->request->is('ajax')) {
+    		$ParticipantsDBI = TableRegistry::get('Participants');
+    		$participants = $ParticipantsDBI->find("all")->contain(['Members']);
+    		$members = array();
+    		foreach ($participants as $participant) {
+    			$member = array();
+    			$member["memberId"] = $participant->memberId;
+    			$member["roomId"] = $participant->roomId;
+    			$member["resourceId"] = $participant->resourceId;
+    			$member["memberName"] = $participant->member->memberName;
+    			$members[] = $member;
+			}
+			$this->response->body(json_encode($members));
     	}
     }
 }

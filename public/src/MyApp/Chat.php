@@ -46,14 +46,22 @@ class Chat implements MessageComponentInterface {
 
     public function onClose(ConnectionInterface $conn) {
 
+    	$return = exec('C:\Users\nowko\Dropbox\WorkSpace\CakePHP\public\bin\cake chat logout '.$conn->resourceId);
+    	$msg["logoutId"] = $conn->resourceId;
+
+    	//参加者にログアウト情報を送信
+    	foreach ($this->clients as $client) {
+    		$client->send(json_encode($msg));
+    	}
+
         // The connection is closed, remove it, as we can no longer send it messages
         $this->clients->detach($conn);
 
-        echo "Connection {$conn->resourceId} has disconnected\n";
+        echo "Connection {$conn->resourceId} has disconnected {$return}\n";
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
-        echo "An error has occurred: {$e->getMessage()}\n";
+    	echo "An error has occurred: {$e->getMessage()}\n";
 
         $conn->close();
     }

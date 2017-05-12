@@ -32,9 +32,9 @@ class ParticipantsTable extends Table
 
         $this->setTable('participants');
         $this->setDisplayField('memberId');
-        $this->setPrimaryKey('memberId');
+        $this->setPrimaryKey(['memberId', 'roomId', 'resourceId']);
 
-        $this->hasOne('Members', [
+        $this->belongsTo('Members', [
         		'className' => 'Members',
         		'foreignKey' => 'memberId',
         ]);
@@ -54,11 +54,11 @@ class ParticipantsTable extends Table
 
         $validator
             ->integer('roomId')
-            ->allowEmpty('roomId');
+            ->allowEmpty('roomId', 'create');
 
         $validator
             ->integer('resourceId')
-            ->allowEmpty('resourceId');
+            ->allowEmpty('resourceId', 'create');
 
         return $validator;
     }
