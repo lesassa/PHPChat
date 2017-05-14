@@ -38,6 +38,7 @@
 			<?php if (isset($loginTable)): ?>
 			<br class="none"/>
 			<?php endif; ?>
+			<?= $this->element('index') ?>
 			<?= $this->fetch('content') ?>
 		</div></div>
 		<div id="login">

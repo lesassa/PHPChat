@@ -160,6 +160,37 @@ jQuery(function ($) {
 		$("#" + roomId).show();
 		room = roomId.slice(4);
 	});
+
+	$("#create").click(function(){
+		var roomName = $("[name=roomName]").val();
+		var roomDescription = $("[name=roomDescription]").val();
+		$.ajax({
+	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'createRoom'], true); ?>",
+	        type: "POST",
+	        data: { roomName : roomName,
+	        		roomDescription : roomDescription,
+		         },
+	        success : function(response){
+	            //通信成功時の処理
+
+				var room = [
+					"<div class=\"menu\">",
+					"<p class=\"room" + response + "\">",
+					roomName,
+					"</p>",
+					"</div>",
+			    ].join("")
+				$("nav").append(room);
+	        	$("[name=roomDescription]").val('');
+	        	$("[name=roomName]").val('');
+	        },
+	        error: function(response){
+	            //通信失敗時の処理
+	            alert('通信失敗');
+	            $("[name=chatText]").val(response);
+	        }
+		});
+	});
 });
 
 

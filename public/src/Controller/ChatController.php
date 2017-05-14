@@ -97,6 +97,7 @@ class ChatController extends AppController
     {
     	$this->autoRender = FALSE;
     	if($this->request->is('ajax')) {
+    		sleep(1);//前回ログアウトを待つ
     		$ParticipantsDBI = TableRegistry::get('Participants');
     		$participants = $ParticipantsDBI->find("all")->contain(['Members']);
     		$members = array();
@@ -111,4 +112,11 @@ class ChatController extends AppController
 			$this->response->body(json_encode($members));
     	}
     }
+
+
+    public function createRoom()
+    {
+    	echo 3;
+    }
+
 }
