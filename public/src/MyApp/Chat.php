@@ -46,7 +46,8 @@ class Chat implements MessageComponentInterface {
 
     public function onClose(ConnectionInterface $conn) {
 
-    	$return = exec('C:\Users\nowko\Dropbox\WorkSpace\CakePHP\public\bin\cake chat logout '.$conn->resourceId);
+    	$exec = dirname(dirname(dirname(__FILE__))).'\bin\cake chat logout '.$conn->resourceId;
+    	$return = exec($exec);
     	$msg["logoutId"] = $conn->resourceId;
 
     	//参加者にログアウト情報を送信

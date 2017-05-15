@@ -35,7 +35,7 @@ jQuery(function ($) {
 		        },
 		        error: function(response){
 		            //通信失敗時の処理
-		            alert('通信失敗');
+		            alert('通信失敗・ログイン情報発信');
 		            return;
 		        }
 		    });
@@ -146,7 +146,7 @@ jQuery(function ($) {
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
-	            alert('通信失敗');
+	            alert('通信失敗・現ログイン情報取得');
 	            return;
 	        }
 	    });
