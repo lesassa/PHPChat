@@ -30,6 +30,7 @@
 		<!-- メニュー -->
 		<nav>
 			<?= $this->element('menu') ?>
+			<?= $this->element('index') ?>
 		</nav>
 		<!-- /メニュー -->
 
@@ -38,7 +39,6 @@
 			<?php if (isset($loginTable)): ?>
 			<br class="none"/>
 			<?php endif; ?>
-			<?= $this->element('index') ?>
 			<?= $this->fetch('content') ?>
 		</div></div>
 		<div id="login">

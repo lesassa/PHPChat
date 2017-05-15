@@ -118,7 +118,7 @@ jQuery(function ($) {
 	  }
 
 	$(document).ready(function(){
-		$("[id^=room]").hide();
+		$("#main [id^=room]").hide();
 		$("#room<?=$roomId ?>").show();
 	});
 
@@ -156,7 +156,7 @@ jQuery(function ($) {
 	var room = "<?=$roomId ?>";
 	$("[class^=room]").click(function(event) {
 		var roomId  = $(this).attr("class");
-		$("[id^=room]").hide();
+		$("#main [id^=room]").hide();
 		$("#" + roomId).show();
 		room = roomId.slice(4);
 	});
