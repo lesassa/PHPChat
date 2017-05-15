@@ -14,6 +14,27 @@
 
 	<!-- javascript -->
 	<?= $this->Html->script('jquery-3.2.1.min.js') ?>
+ 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+ 	<?= $this->Html->script('desktop-notify-min.js') ?>
+ 	<script>
+ 		jQuery(function ($) {
+ 			$ (document ).ready(function() {
+ 				if ( !notify.isSupported )
+ 				{
+ 					$( '#supportbutton' ).css( 'display', 'none' );
+ 	 			}
+
+ 			});
+ 			$( '#supportbutton' ).click(function() {
+ 				notify.requestPermission();
+ 			});
+
+ 			function show(msg)
+ 			{
+ 				notify.createNotification( 'チャット', { body: msg, icon: '<?=$this->Url->image('cake.icon.png');?>' } )
+ 			}
+ 		});
+ 	</script>
 </head>
 
 <body>
@@ -31,6 +52,7 @@
 		<nav>
 			<?= $this->element('menu') ?>
 			<?= $this->element('index') ?>
+			<?=$this->Form->input("通知設定", ["type" => "button", "id" => "supportbutton"]) ?>
 		</nav>
 		<!-- /メニュー -->
 

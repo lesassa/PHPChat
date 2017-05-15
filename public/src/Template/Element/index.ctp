@@ -1,6 +1,7 @@
-新規ルーム作成
+
 <?=$this->Form->create(null,['type' => 'post']) ?>
 <table>
+	<tr><th>新規ルーム作成</th></tr>
 	<tr><td>
 		ルーム名<br/>
 		<?=$this->Form->input("roomName", ["type" => "text",]) ?>
@@ -9,6 +10,6 @@
 		ルームの説明<br/>
 		<?=$this->Form->input("roomDescription", ["type" => "textarea",]) ?>
 	</td></tr>
+	<tr><td><?=$this->Form->input("create", ["type" => "button",]) ?></td></tr>
 </table>
-<?=$this->Form->input("create", ["type" => "button",]) ?>
 <?=$this->Form->end() ?>

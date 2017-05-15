@@ -6,6 +6,23 @@ var conn = new WebSocket('ws:' + document.domain + ':443');
 
 jQuery(function ($) {
 
+	//デスクトップ通知サポート確認
+	$ (document ).ready(function() {
+			if ( !notify.isSupported )
+			{
+				$( '#supportbutton' ).css( 'display', 'none' );
+ 			}
+
+		});
+		$( '#supportbutton' ).click(function() {
+			notify.requestPermission();
+	});
+
+	//デスクトップ通知
+	function show(title, msg)
+	{
+		notify.createNotification( title, { body: msg, icon: '<?=$this->Url->image('cake.icon.png');?>' } )
+	}
 
 	conn.onopen = function(e) {
 	    console.log("Connection established!");
@@ -16,6 +33,7 @@ jQuery(function ($) {
 	conn.onclose = function(e) { /* 切断時の処理 */
 	};
 
+	var memberId = <?=$loginTable->memberId ?>;
 	conn.onmessage = function(e) {
 	    console.log(e.data);
 
@@ -31,6 +49,7 @@ jQuery(function ($) {
 		            //通信成功時の処理
 		            var member = JSON.stringify({"memberId":"<?=$loginTable->memberId ?>", "memberName": "<?=$loginTable->memberName ?>", "resourceId": e.data});
 		            conn.send(member);
+		            resourceId = e.data;
 		        	return;
 		        },
 		        error: function(response){
@@ -39,6 +58,7 @@ jQuery(function ($) {
 		            return;
 		        }
 		    });
+		    return;
 	    }
 
 	    var msg = JSON.parse(e.data);
@@ -71,6 +91,11 @@ jQuery(function ($) {
 	        "</p>",
 	    ].join("").replace(/\n/g, "<br />");
 	    $("#chats" + msg["roomId"]).append(chat);
+
+	    //他の人からはデスクトップに通知する
+// 	    if (memberId != msg["memberId"]) {
+		  	show(msg["roomName"], msg["chatText"]);
+// 	    }
 	};
 
 	//イベント
@@ -119,7 +144,7 @@ jQuery(function ($) {
 
 	$(document).ready(function(){
 		$("#main [id^=room]").hide();
-		$("#room<?=$roomId ?>").show();
+		$("#main #room<?=$roomId ?>").show();
 	});
 
 	//現ログイン情報取得
@@ -153,17 +178,24 @@ jQuery(function ($) {
 
 	});
 
+
 	var room = "<?=$roomId ?>";
-	$("[class^=room]").click(function(event) {
+	$('nav').on('click', '[class^=room]', function() {
+	//$("[class^=room]").click(function(event) {
 		var roomId  = $(this).attr("class");
 		$("#main [id^=room]").hide();
-		$("#" + roomId).show();
+		$("#main #" + roomId).show();
 		room = roomId.slice(4);
 	});
 
 	$("#create").click(function(){
 		var roomName = $("[name=roomName]").val();
 		var roomDescription = $("[name=roomDescription]").val();
+		//入力チェック
+		if(roomName == "" || roomDescription == "" ) {
+			return false;
+		}
+
 		$.ajax({
 	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'createRoom'], true); ?>",
 	        type: "POST",
@@ -173,16 +205,24 @@ jQuery(function ($) {
 	        success : function(response){
 	            //通信成功時の処理
 
-				var room = [
+				var roomBotton = [
 					"<div class=\"menu\">",
 					"<p class=\"room" + response + "\">",
 					roomName,
 					"</p>",
 					"</div>",
-			    ].join("")
-				$("nav").append(room);
+			    ].join("");
+				$("nav").prepend(roomBotton);
 	        	$("[name=roomDescription]").val('');
 	        	$("[name=roomName]").val('');
+
+	        	var room = [
+		        	"<div id=\"room" + response + "\">",
+					"<div id=\"chats" + response + "\">",
+					"</div>",
+					"</div>",
+			    ].join("");
+	        	$("#status").after(room);
 	        },
 	        error: function(response){
 	            //通信失敗時の処理

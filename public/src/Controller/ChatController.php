@@ -70,7 +70,11 @@ class ChatController extends AppController
 	    	$chat->chatText = $this->request->data["chatText"];
 	    	$ChatsDBI->save($chat);
 
+	    	$RoomsDBI = TableRegistry::get('Rooms');
+	    	$room = $RoomsDBI->get($chat->roomId);
+
 	    	$msg["roomId"] = $chat->roomId;
+	    	$msg["roomName"] = $room->roomName;
 	    	$msg["chatNumber"] = $chat->chatNumber;
 	    	$msg["chatText"] = $chat->chatText;
 	    	$msg["memberId"] = $chat->memberId;
@@ -116,7 +120,15 @@ class ChatController extends AppController
 
     public function createRoom()
     {
-    	echo 3;
+    	$this->autoRender = FALSE;
+    	if($this->request->is('ajax')) {
+    		$RoomsDBI = TableRegistry::get('Rooms');
+    		$room = $RoomsDBI->newEntity($this->request->data);
+    		if ($RoomsDBI->save($room)) {
+    			echo $room->roomId;
+    		}
+
+    	}
     }
 
 }
