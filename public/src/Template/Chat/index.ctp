@@ -93,9 +93,12 @@ jQuery(function ($) {
 	    $("#chats" + msg["roomId"]).append(chat);
 
 	    //他の人からはデスクトップに通知する
-// 	    if (memberId != msg["memberId"]) {
+	    if (memberId != msg["memberId"]) {
 		  	show(msg["roomName"], msg["chatText"]);
-// 	    }
+		  	if (parseInt(msg["roomId"]) != room) {
+			  	upUnread(msg["roomId"]);
+		  	}
+	    }
 	};
 
 	//イベント
@@ -186,6 +189,7 @@ jQuery(function ($) {
 		$("#main [id^=room]").hide();
 		$("#main #" + roomId).show();
 		room = roomId.slice(4);
+		resetUnread(room)
 	});
 
 	$("#create").click(function(){
@@ -209,6 +213,7 @@ jQuery(function ($) {
 					"<div class=\"menu\">",
 					"<p class=\"room" + response + "\">",
 					roomName,
+					"<span class=\"unread\" id=\"unread" + response + "></span>",
 					"</p>",
 					"</div>",
 			    ].join("");
@@ -231,6 +236,23 @@ jQuery(function ($) {
 	        }
 		});
 	});
+
+	//未読カウンター
+	function upUnread(roomId) {
+		var counter = $("#unread" + roomId).text().slice(3);
+		if (counter == "") {
+			counter = 0;
+		}
+		counter = parseInt(counter) + 1;
+		$("#unread" + roomId).text("new" + String(counter));
+	}
+
+	//未読カウンターリセット
+	function resetUnread(roomId) {
+		$("#unread" + roomId).text("");
+	}
+
+
 });
 
 
