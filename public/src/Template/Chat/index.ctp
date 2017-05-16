@@ -26,11 +26,12 @@ jQuery(function ($) {
 
 	conn.onopen = function(e) {
 	    console.log("Connection established!");
-	    $("#status").append("Connection established!<br/>");
+	    $("#status").append("接続中");
 	    ping();
 	};
 
 	conn.onclose = function(e) { /* 切断時の処理 */
+		$("#status").append("切断");
 	};
 
 	var memberId = <?=$loginTable->memberId ?>;
@@ -90,7 +91,7 @@ jQuery(function ($) {
 	        " ＜ " + msg["chatText"],
 	        "</p>",
 	    ].join("").replace(/\n/g, "<br />");
-	    $("#chats" + msg["roomId"]).append(chat);
+	    $("#chats" + msg["roomId"]).prepend(chat);
 
 	    //他の人からはデスクトップに通知する
 	    if (memberId != msg["memberId"]) {
@@ -259,14 +260,13 @@ jQuery(function ($) {
 
 </script>
 <h2>チャット</h2>
-<p id="status"></p>
-<?php foreach($rooms as $room): ?>
-	<?= $this->element('room', ['roomId'=> $room->roomId, 'chats'=> $room->chats]) ?>
-<?php endforeach; ?>
 <?=$this->Form->create(null,['type' => 'post']) ?>
 <table>
 	<tr><td><?=$this->Form->input("chatText", ["type" => "textarea",]) ?></td></tr>
 	<tr><td><?=$this->Form->input("send", ["type" => "button",]) ?></td></tr>
 </table>
 <?=$this->Form->end() ?>
-<?=$this->Html->link("ルーム一覧へ", ['controller'=>'Chat', 'action'=>'index']); ?>
+<p id="status"></p>
+<?php foreach($rooms as $room): ?>
+	<?= $this->element('room', ['roomId'=> $room->roomId, 'chats'=> $room->chats]) ?>
+<?php endforeach; ?>
