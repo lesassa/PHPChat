@@ -31,7 +31,14 @@ jQuery(function ($) {
 	};
 
 	conn.onclose = function(e) { /* 切断時の処理 */
-		$("#status").append("切断");
+		$("#status").text("");
+		$("#status").text("切断。ページをリロードしてください。");
+
+		//エラーがタイムアウトの場合、再接続
+		if(e.code == "1006") {
+			conn.close();
+			location.reload();
+		}
 	};
 
 	var memberId = <?=$loginTable->memberId ?>;
@@ -81,8 +88,28 @@ jQuery(function ($) {
 			return;
 		}
 
-	    //通常メッセージを受信した場合
+		//ルームの作成時
+		if (msg.roomCreate) {
+			var roomBotton = [
+					"<div class=\"menu\">",
+					"<p class=\"room" + String(msg["roomId"]) + "\">",
+					String(msg["roomName"]),
+					"<span class=\"unread\" id=\"unread" + String(msg["roomId"]) + "></span>",
+					"</p>",
+					"</div>",
+			    ].join("");
+				$("nav").prepend(roomBotton);
+			var roomCreate = [
+		        	"<div id=\"room" + String(msg["roomId"]) + "\">",
+					"<div id=\"chats" + String(msg["roomId"]) + "\">",
+					"</div>",
+					"</div>",
+			    ].join("");
+	        $("#status").after(roomCreate);
+			return;
+		}
 
+	    //通常メッセージを受信した場合
 	    var chat = [
 	        "<hr>",
 	        "<p>",
@@ -210,25 +237,28 @@ jQuery(function ($) {
 	        success : function(response){
 	            //通信成功時の処理
 
-				var roomBotton = [
-					"<div class=\"menu\">",
-					"<p class=\"room" + response + "\">",
-					roomName,
-					"<span class=\"unread\" id=\"unread" + response + "></span>",
-					"</p>",
-					"</div>",
-			    ].join("");
-				$("nav").prepend(roomBotton);
-	        	$("[name=roomDescription]").val('');
-	        	$("[name=roomName]").val('');
+				//他の参加者にお知らせ
+				conn.send(JSON.stringify({"roomId":response, "roomName": roomName, "roomCreate": "1"}));
 
-	        	var room = [
-		        	"<div id=\"room" + response + "\">",
-					"<div id=\"chats" + response + "\">",
-					"</div>",
-					"</div>",
-			    ].join("");
-	        	$("#status").after(room);
+//				var roomBotton = [
+//					"<div class=\"menu\">",
+//					"<p class=\"room" + response + "\">",
+//					roomName,
+//					"<span class=\"unread\" id=\"unread" + response + "></span>",
+//					"</p>",
+//					"</div>",
+//			    ].join("");
+//				$("nav").prepend(roomBotton);
+//	        	$("[name=roomDescription]").val('');
+//	        	$("[name=roomName]").val('');
+//
+//	        	var roomCreate = [
+//		        	"<div id=\"room" + response + "\">",
+//					"<div id=\"chats" + response + "\">",
+//					"</div>",
+//					"</div>",
+//			    ].join("");
+//	        	$("#status").after(roomCreate);
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
