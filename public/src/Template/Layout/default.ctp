@@ -52,7 +52,8 @@
 		<nav>
 			<?= $this->element('menu') ?>
 			<?= $this->element('index') ?>
-			<?=$this->Form->input("通知設定", ["type" => "button", "id" => "supportbutton"]) ?>
+			<?=$this->Form->input("通知設定", ["type" => "button", "id" => "supportbutton"]) ?><br/>
+			<?=$this->Html->link('ログアウト', ['controller'=>'Reader', 'action'=>'logout']); ?>
 		</nav>
 		<!-- /メニュー -->
 
