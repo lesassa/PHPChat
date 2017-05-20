@@ -14,5 +14,6 @@
 			</tr>
 			<tr><td colspan="2"></label><?=$this->Form->submit('ログイン') ?></td></tr>
 		</table>
+		<?=$this->Html->link('アカウント作成', ['controller'=>'Reader', 'action'=>'createMember']); ?>
 	</fieldset>
 <?=$this->Form->end() ?>

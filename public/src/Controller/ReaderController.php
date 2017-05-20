@@ -22,7 +22,7 @@ class ReaderController extends AppController
 	{
 		parent::initialize();
 
-		$this->Auth->allow(['login', "error"]);
+		$this->Auth->allow(['login', "error", "createMember"]);
 	}
 
     /**
@@ -79,6 +79,20 @@ class ReaderController extends AppController
 	{
 		$errorMessage = $this->Session->consume($errorId);
 		$this->set('errorMessage', $errorMessage);
+	}
+
+	public function createMember()
+	{
+		$member = null;
+		$this->viewBuilder()->layout('defaultLogin');
+		if($this->request->is(['post'])) {
+			$MembersDBI = TableRegistry::get('Members');
+			$member = $MembersDBI->newEntity($this->request->data,['associated' => ['Login']]);
+			if ($MembersDBI->save($member)) {
+				return $this->redirect(['controller'=>'Reader', 'action' => 'login']);
+			}
+		}
+		$this->set('member', $member);
 	}
 
 

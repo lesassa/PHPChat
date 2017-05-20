@@ -59,4 +59,15 @@ class LoginTable extends Table
 
         return $validator;
     }
+
+    // テーブルクラスの中で
+    public function buildRules(RulesChecker $rules)
+    {
+
+    	$rules->addUpdate(function ($entity, $options) {
+    		return false;
+    	}, 'duplication',
+    	['errorField' => 'loginId', 'message' => 'ログインIDが重複しています。']);
+    	return $rules;
+    }
 }

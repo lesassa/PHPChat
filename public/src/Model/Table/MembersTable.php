@@ -34,10 +34,10 @@ class MembersTable extends Table
         $this->displayField('memberName');
         $this->primaryKey('memberId');
 
-//         $this->belongsTo('Types', [
-//         		'className' => 'Types',
-//         		'foreignKey' => 'typeId',
-//         ]);
+        $this->hasOne('Login', [
+        		'className' => 'Login',
+        		'foreignKey' => 'memberId',
+        ]);
     }
 
     public function findActive(Query $query, array $options)

@@ -47,4 +47,7 @@ class Login extends Entity
     	$password = (new DefaultPasswordHasher)->hash($password);
     	return $password;
     }
+
+
+
 }
