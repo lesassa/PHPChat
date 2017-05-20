@@ -175,7 +175,7 @@ jQuery(function ($) {
 
 	$(document).ready(function(){
 		$("#main [id^=room]").hide();
-		$("#main #room<?=$roomId ?>").show();
+		$("#main #rooms").show();
 	});
 
 	//現ログイン情報取得
@@ -210,7 +210,7 @@ jQuery(function ($) {
 	});
 
 
-	var room = "<?=$roomId ?>";
+	var room = "s";
 	$('nav').on('click', '[class^=room]', function() {
 	//$("[class^=room]").click(function(event) {
 		var roomId  = $(this).attr("class");
@@ -240,25 +240,8 @@ jQuery(function ($) {
 				//他の参加者にお知らせ
 				conn.send(JSON.stringify({"roomId":response, "roomName": roomName, "roomCreate": "1"}));
 
-//				var roomBotton = [
-//					"<div class=\"menu\">",
-//					"<p class=\"room" + response + "\">",
-//					roomName,
-//					"<span class=\"unread\" id=\"unread" + response + "></span>",
-//					"</p>",
-//					"</div>",
-//			    ].join("");
-//				$("nav").prepend(roomBotton);
-//	        	$("[name=roomDescription]").val('');
-//	        	$("[name=roomName]").val('');
-//
-//	        	var roomCreate = [
-//		        	"<div id=\"room" + response + "\">",
-//					"<div id=\"chats" + response + "\">",
-//					"</div>",
-//					"</div>",
-//			    ].join("");
-//	        	$("#status").after(roomCreate);
+	        	$("[name=roomDescription]").val('');
+	        	$("[name=roomName]").val('');
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
@@ -297,6 +280,7 @@ jQuery(function ($) {
 </table>
 <?=$this->Form->end() ?>
 <p id="status"></p>
+<?= $this->element('rooms', ['rooms'=> $rooms]) ?>
 <?php foreach($rooms as $room): ?>
 	<?= $this->element('room', ['roomId'=> $room->roomId, 'chats'=> $room->chats]) ?>
 <?php endforeach; ?>
