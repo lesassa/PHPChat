@@ -106,6 +106,18 @@ jQuery(function ($) {
 					"</div>",
 			    ].join("");
 	        $("#status").after(roomCreate);
+
+			var roomList = [
+				"<table>",
+				"<tr><th>ルームネーム</th>",
+				"<td>" + String(msg["roomName"]) + "</td></tr>",
+	        	"<tr><th>ルーム説明</th>",
+				"<td>" + String(msg["roomDescription"]) + "</td>",
+				"</tr></table>",
+		    ].join("");
+			$("#room9999").append(roomList);
+			$("#main [id^=room]").hide();
+			$("#main #room" + room).show();
 			return;
 		}
 
@@ -175,7 +187,7 @@ jQuery(function ($) {
 
 	$(document).ready(function(){
 		$("#main [id^=room]").hide();
-		$("#main #rooms").show();
+		$("#main #room" + room).show();
 	});
 
 	//現ログイン情報取得
@@ -210,7 +222,7 @@ jQuery(function ($) {
 	});
 
 
-	var room = "s";
+	var room = "9999";
 	$('nav').on('click', '[class^=room]', function() {
 	//$("[class^=room]").click(function(event) {
 		var roomId  = $(this).attr("class");
@@ -238,7 +250,7 @@ jQuery(function ($) {
 	            //通信成功時の処理
 
 				//他の参加者にお知らせ
-				conn.send(JSON.stringify({"roomId":response, "roomName": roomName, "roomCreate": "1"}));
+				conn.send(JSON.stringify({"roomId":response, "roomName": roomName, "roomCreate": "1", "roomDescription": roomDescription}));
 
 	        	$("[name=roomDescription]").val('');
 	        	$("[name=roomName]").val('');
