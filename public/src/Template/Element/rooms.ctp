@@ -1,4 +1,5 @@
-<div id="room9999">
+<div class="room9999">
+	<h2>ルーム一覧</h2>
 	<?php foreach($rooms as $room): ?>
 		<table>
 			<tr>

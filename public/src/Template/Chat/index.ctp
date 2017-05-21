@@ -26,7 +26,7 @@ jQuery(function ($) {
 
 	conn.onopen = function(e) {
 	    console.log("Connection established!");
-	    $("#status").append("接続中");
+	    $("#status").append("接続済");
 	    ping();
 	};
 
@@ -94,18 +94,24 @@ jQuery(function ($) {
 					"<div class=\"menu\">",
 					"<p class=\"room" + String(msg["roomId"]) + "\">",
 					String(msg["roomName"]),
-					"<span class=\"unread\" id=\"unread" + String(msg["roomId"]) + "></span>",
+					"<span class=\"unread\" id=\"unread" + String(msg["roomId"]) + "\"></span>",
 					"</p>",
 					"</div>",
 			    ].join("");
 				$("nav").prepend(roomBotton);
 			var roomCreate = [
-		        	"<div id=\"room" + String(msg["roomId"]) + "\">",
+		        	"<div class=\"room" + String(msg["roomId"]) + "\">",
 					"<div id=\"chats" + String(msg["roomId"]) + "\">",
 					"</div>",
 					"</div>",
 			    ].join("");
-	        $("#status").after(roomCreate);
+	        $(".inner").append(roomCreate);
+			var roomName = [
+	        	"<div class=\"room" + String(msg["roomId"]) + "\"><h2>",
+	        	String(msg["roomName"]),
+				"</h2></div>",
+		    ].join("");
+        	$("#main form").before(roomName);
 
 			var roomList = [
 				"<table>",
@@ -115,9 +121,9 @@ jQuery(function ($) {
 				"<td>" + String(msg["roomDescription"]) + "</td>",
 				"</tr></table>",
 		    ].join("");
-			$("#room9999").append(roomList);
-			$("#main [id^=room]").hide();
-			$("#main #room" + room).show();
+			$("#main .room9999").append(roomList);
+			$("#main [class^=room]").hide();
+			$("#main .room" + room).show();
 			return;
 		}
 
@@ -185,10 +191,6 @@ jQuery(function ($) {
 	    setTimeout(ping, 180000);
 	  }
 
-	$(document).ready(function(){
-		$("#main [id^=room]").hide();
-		$("#main #room" + room).show();
-	});
 
 	//現ログイン情報取得
 	$(document).ready(function(){
@@ -221,15 +223,30 @@ jQuery(function ($) {
 
 	});
 
+	$(document).ready(function(){
+		$("#main [class^=room]").hide();
+		$("#main .room" + room).show();
+		if (room == 9999) {
+			$("#main #sendChat").hide();
+		} else {
+			$("#main #sendChat").show();
+		}
+	});
+
 
 	var room = "9999";
 	$('nav').on('click', '[class^=room]', function() {
 	//$("[class^=room]").click(function(event) {
 		var roomId  = $(this).attr("class");
-		$("#main [id^=room]").hide();
-		$("#main #" + roomId).show();
+		$("#main [class^=room]").hide();
+		$("#main ." + roomId).show();
 		room = roomId.slice(4);
 		resetUnread(room)
+		if (room == 9999) {
+			$("#main #sendChat").hide();
+		} else {
+			$("#main #sendChat").show();
+		}
 	});
 
 	$("#create").click(function(){
@@ -284,15 +301,16 @@ jQuery(function ($) {
 
 
 </script>
-<h2>チャット</h2>
+<?php foreach($rooms as $room): ?>
+	<div class="room<?=$room->roomId?>"><h2><?=$room->roomName ?></h2></div>
+<?php endforeach; ?>
 <?=$this->Form->create(null,['type' => 'post']) ?>
-<table>
+<table id="sendChat">
 	<tr><td><?=$this->Form->input("chatText", ["type" => "textarea",]) ?></td></tr>
 	<tr><td><?=$this->Form->input("send", ["type" => "button",]) ?></td></tr>
 </table>
 <?=$this->Form->end() ?>
-<p id="status"></p>
 <?= $this->element('rooms', ['rooms'=> $rooms]) ?>
 <?php foreach($rooms as $room): ?>
-	<?= $this->element('room', ['roomId'=> $room->roomId, 'chats'=> $room->chats]) ?>
+	<?= $this->element('room', ['room'=> $room, 'chats'=> $room->chats]) ?>
 <?php endforeach; ?>
