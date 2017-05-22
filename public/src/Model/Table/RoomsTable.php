@@ -48,10 +48,18 @@ class RoomsTable extends Table
             ->allowEmpty('roomId', 'create');
 
         $validator
-            ->allowEmpty('roomName');
+        	->notEmpty('roomName', "ルーム名が未入力です。")
+            ->add('roomName', 'length', [
+            		'rule' => ['maxLength', 32],
+            		'message' => '32文字以内で入力してください。']);
+
 
         $validator
-            ->allowEmpty('roomDescription');
+        	->notEmpty('roomDescription', "ルーム説明が未入力です。")
+        	->add('roomDescription', 'length', [
+        			'rule' => ['maxLength', 140],
+        			'message' => '140文字以内で入力してください。']);
+
 
         $validator
             ->dateTime('createDate')

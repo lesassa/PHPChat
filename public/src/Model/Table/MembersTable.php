@@ -58,20 +58,20 @@ class MembersTable extends Table
             ->notEmpty('memberId', 'create');
 
         $validator
-            ->notEmpty('memberName')
+            ->notEmpty('memberName', 'ニックネームは必須入力です。')
             ->add('memberName', 'length', [
 				'rule' => ['maxLength', 32],
-				'message' => '名前が長すぎます。']);
+				'message' => 'ニックネームは32文字以内で入力してください。']);
 
         $validator
         	->add('memberKana', 'format', [
         		'rule' => ['maxLength', 32],
         		'message' => 'ふりがなが長すぎます。',])
-            ->notEmpty('memberKana');
+        	->allowEmpty('memberKana');
 
         $validator
             ->integer('typeId')
-            ->notEmpty('typeId');
+            ->allowEmpty('typeId');
 
         $validator
 	        ->add('memberMail', 'format', [

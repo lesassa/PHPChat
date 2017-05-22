@@ -43,15 +43,28 @@ class LoginTable extends Table
      */
     public function validationDefault(Validator $validator)
     {
+    	// カスタムバリデーション設定
+    	// 書き方は「$validator->provider('プロバイダのキー', 'カスタムバリデーションのパス');」です。
+    	$validator->provider('ProviderKey', 'App\Model\Validation\CustomValidation');
 
         $validator
-            ->notEmpty('loginId', 'create');
+            ->notEmpty('loginId', 'ログインIDは必須入力です。')
+            ->add('loginId', 'ruleName', [
+            		'rule' => ['alphaNumericCustom'],
+            		'provider' => 'ProviderKey',   // カスタムバリデーション設定で書いたプロバイダのキーを入れます。
+            		'message' => 'ログインIDは半角英数字で入力してください。'])
+            ->add('loginId', 'format', [
+            	'rule' => ['maxLength', 10],
+            	'message' => 'IDは10文字以内です。']);
 
         $validator
-            ->notEmpty('password')
+        ->notEmpty('password', 'パスワードが未入力です。')
             ->add('password', 'comWith',[
                     'rule' => ['compareWith', "passwordCheck"],
-                    'message' => '確認用と相違があります。']);
+                    'message' => '確認用と相違があります。'])
+            ->add('password', 'format', [
+                    'rule' => ['maxLength', 32],
+                    'message' => 'パスワードは32文字以内で入力してください。']);
 
         $validator
             ->integer('memberId')

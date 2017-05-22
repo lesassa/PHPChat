@@ -67,19 +67,30 @@ class ChatController extends AppController
 	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
 	    	$chat->chatNumber = $ret->max_id + 1;
 	    	$chat->memberId = $this->loginTable->memberId;
-	    	$chat->chatText = $this->request->data["chatText"];
-	    	$ChatsDBI->save($chat);
+	    	$ChatsDBI->patchEntity($chat, $this->request->data);
+	    	if ($ChatsDBI->save($chat)) {
 
-	    	$RoomsDBI = TableRegistry::get('Rooms');
-	    	$room = $RoomsDBI->get($chat->roomId);
 
-	    	$msg["roomId"] = $chat->roomId;
-	    	$msg["roomName"] = $room->roomName;
-	    	$msg["chatNumber"] = $chat->chatNumber;
-	    	$msg["chatText"] = $chat->chatText;
-	    	$msg["memberId"] = $chat->memberId;
-	    	$msg["memberName"] = $this->loginTable->memberName;
-	    	echo json_encode($msg);
+		    	$RoomsDBI = TableRegistry::get('Rooms');
+		    	$room = $RoomsDBI->get($chat->roomId);
+
+		    	$msg["roomId"] = $chat->roomId;
+		    	$msg["roomName"] = $room->roomName;
+		    	$msg["chatNumber"] = $chat->chatNumber;
+		    	$msg["chatText"] = $chat->chatText;
+		    	$msg["memberId"] = $chat->memberId;
+		    	$msg["memberName"] = $this->loginTable->memberName;
+
+		    	echo json_encode($msg);
+	    	} else {
+
+	    		//ログ出力
+	    		$this->Log->outputLog($chat->errors());
+
+	    		echo json_encode(["errors" =>$chat->errors()]);
+
+	    	}
+
     	}
     }
 
@@ -126,6 +137,11 @@ class ChatController extends AppController
     		$room = $RoomsDBI->newEntity($this->request->data);
     		if ($RoomsDBI->save($room)) {
     			echo $room->roomId;
+    		} else {
+    			//ログ出力
+    			$this->Log->outputLog($room->errors());
+
+    			echo json_encode(["errors" =>$room->errors()]);
     		}
 
     	}

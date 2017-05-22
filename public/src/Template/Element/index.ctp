@@ -1,6 +1,6 @@
 
 <?=$this->Form->create(null,['type' => 'post']) ?>
-<table>
+<table id="createRoom">
 	<tr><th>新規ルーム作成</th></tr>
 	<tr><td>
 		ルーム名<br/>

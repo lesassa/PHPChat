@@ -292,6 +292,7 @@ table th{
 	color:#ff0000;
 	font-weight:bold;
 	font-size:small;
+	background: transparent;	/*背景色*/
 }
 
 /* ページ送りボタン */

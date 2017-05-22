@@ -293,6 +293,7 @@ return [
             'file' => 'debug',
             'levels' => ['notice', 'info', 'debug'],
             'url' => env('LOG_DEBUG_URL', null),
+        	'scopes' => false,  // 超重要：これがないと、shell, retrievalのscopeもlevelに合わせてdebug.logに出力されてしまう。
         ],
         'error' => [
             'className' => 'Cake\Log\Engine\FileLog',
@@ -301,6 +302,15 @@ return [
             'levels' => ['warning', 'error', 'critical', 'alert', 'emergency'],
             'url' => env('LOG_ERROR_URL', null),
         ],
+    		'your_scope' => [ //個別ログ
+    				'className' => 'Cake\Log\Engine\FileLog',
+    				'path' => LOGS,
+    				'file' => 'tran',
+    				'levels' => [],
+    				'url' => env('LOG_ERROR_URL', null),
+    				'scopes' => ['your_scope'],
+    		],
+
     ],
 
     /**

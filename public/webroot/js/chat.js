@@ -1,5 +1,3 @@
-<script>
-
 //Websocket接続
 var conn = new WebSocket('ws:' + document.domain + ':443');
 
@@ -164,7 +162,10 @@ jQuery(function ($) {
 	function send() {
 		var msg = $("[name=chatText]").val();
 		$("[name=chatText]").val('');
-
+		//入力チェック
+		if(msg == "") {
+			return false;
+		}
 	    $.ajax({
 	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat'], true); ?>",
 	        type: "POST",
@@ -173,22 +174,6 @@ jQuery(function ($) {
 		         },
 	        success : function(response){
 	            //通信成功時の処理
-	            $("#sendChat .error-message").remove();
-	            var msg = JSON.parse(response);
-	            if (msg.errors) {
-	            	for(var key in msg["errors"]){
-	            		for(var key2 in msg["errors"][key]){
-		            		var error = [
-		            	        "<div class=\"error-message\">",
-		            	        msg["errors"][key][key2],
-		            	        "</div>",
-		            	    ].join("");
-	            			$("[name=" + key + "]").after(error);
-	            		}
-	            	}
-
-		            return;
-	            }
 	    		conn.send(response);
 	        },
 	        error: function(response){
@@ -265,6 +250,10 @@ jQuery(function ($) {
 	$("#create").click(function(){
 		var roomName = $("[name=roomName]").val();
 		var roomDescription = $("[name=roomDescription]").val();
+		//入力チェック
+		if(roomName == "" || roomDescription == "" ) {
+			return false;
+		}
 
 		$.ajax({
 	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'createRoom'], true); ?>",
@@ -274,22 +263,7 @@ jQuery(function ($) {
 		         },
 	        success : function(response){
 	            //通信成功時の処理
-	            $("#createRoom .error-message").remove();
 
-	            if (isNaN(response)) {
-	            	var msg = JSON.parse(response);
-	            	for(var key in msg["errors"]){
-	            		for(var key2 in msg["errors"][key]){
-		            		var error = [
-		            	        "<div class=\"error-message\">",
-		            	        msg["errors"][key][key2],
-		            	        "</div>",
-		            	    ].join("");
-	            			$("[name=" + key + "]").after(error);
-	            		}
-	            	}
-		            return;
-	            }
 				//他の参加者にお知らせ
 				conn.send(JSON.stringify({"roomId":response, "roomName": roomName, "roomCreate": "1", "roomDescription": roomDescription}));
 
@@ -321,20 +295,3 @@ jQuery(function ($) {
 
 
 });
-
-
-
-</script>
-<?php foreach($rooms as $room): ?>
-	<div class="room<?=$room->roomId?>"><h2><?=$room->roomName ?></h2></div>
-<?php endforeach; ?>
-<?=$this->Form->create(null,['type' => 'post']) ?>
-<table id="sendChat">
-	<tr><td><?=$this->Form->input("chatText", ["type" => "textarea",]) ?></td></tr>
-	<tr><td><?=$this->Form->input("send", ["type" => "button",]) ?></td></tr>
-</table>
-<?=$this->Form->end() ?>
-<?= $this->element('rooms', ['rooms'=> $rooms]) ?>
-<?php foreach($rooms as $room): ?>
-	<?= $this->element('room', ['room'=> $room, 'chats'=> $room->chats]) ?>
-<?php endforeach; ?>

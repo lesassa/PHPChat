@@ -61,7 +61,10 @@ class ChatsTable extends Table
             ->allowEmpty('memberId');
 
         $validator
-            ->allowEmpty('chatText');
+            ->notempty('chatText', "チャット内容が未入力です。")
+            ->add('chatText', 'length', [
+            	'rule' => ['maxLength', 140],
+            	'message' => '140文字以内で入力してください。']);
 
         $validator
             ->integer('replyId')

@@ -14,9 +14,10 @@
 			<?=$this->Form->input("login.password", ["type" => "password",]) ?>
 		</td></tr>
 		<tr><td>
-			パスワード<br/>
+			パスワード（確認）<br/>
 			<?=$this->Form->input("login.passwordCheck", ["type" => "password",]) ?>
 		</td></tr>
 		<tr><td><?=$this->Form->input("create", ["type" => "submit",]) ?></td></tr>
 	</table>
 <?=$this->Form->end() ?>
+<?=$this->Html->link('戻る', ['controller'=>'Reader', 'action'=>'login']); ?>
