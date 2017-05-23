@@ -128,14 +128,30 @@ jQuery(function ($) {
 		}
 
 	    //通常メッセージを受信した場合
-	    var chat = [
-	        "<hr>",
-	        "<p>",
-	        String(msg["chatNumber"]) + ":",
-	        String(msg["memberName"]),
-	        " ＜ " + msg["chatText"],
-	        "</p>",
-	    ].join("").replace(/\n/g, "<br />");
+	    if (msg["replyId"] == null) {
+		    var chat = [
+		        "<hr>",
+		        "<p>",
+		        String(msg["chatNumber"]) + ":",
+		        String(msg["memberName"]),
+		        " ＜ " + msg["chatText"],
+		        "<br/>",
+		        "<button type=\"button\" value=\"" + String(msg["chatNumber"]) + "\" name=\"reply" + String(msg["chatNumber"]) + "\" id=\"fan-xin\">返信</button>",
+		        "</p>",
+		    ].join("").replace(/\n/g, "<br />");
+	    } else {
+		    var chat = [
+		        "<hr>",
+		        "<p>",
+		        ">> " + String(msg["replyId"]) + "<br/>",
+		        String(msg["chatNumber"]) + ":",
+		        String(msg["memberName"]),
+		        " ＜ " + msg["chatText"],
+		        "<br/>",
+		        "<button type=\"button\" value=\"" + String(msg["chatNumber"]) + "\" name=\"reply" + String(msg["chatNumber"]) + "\" id=\"fan-xin\">返信</button>",
+		        "</p>",
+		    ].join("").replace(/\n/g, "<br />");
+	    }
 	    $("#chats" + msg["roomId"]).prepend(chat);
 
 	    //他の人からはデスクトップに通知する
@@ -169,13 +185,14 @@ jQuery(function ($) {
 
 	function send() {
 		var msg = $("[name=chatText]").val();
-		$("[name=chatText]").val('');
+		var replyId = $("[name=replyId]").val();
 
 	    $.ajax({
 	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat'], true); ?>",
 	        type: "POST",
 	        data: { chatText : msg,
 	        		roomId : room,
+	        		replyId : replyId,
 		         },
 	        success : function(response){
 	            //通信成功時の処理
@@ -196,6 +213,8 @@ jQuery(function ($) {
 		            return;
 	            }
 	    		conn.send(response);
+        		$("[name=chatText]").val('');
+        		$("[name=replyId]").val('');
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
@@ -255,7 +274,10 @@ jQuery(function ($) {
 
 	var room = "9999";
 	$('nav').on('click', '[class^=room]', function() {
-	//$("[class^=room]").click(function(event) {
+
+		$("[name=chatText]").val('');
+		$("[name=replyId]").val('');
+
 		var roomId  = $(this).attr("class");
 		$("#main [class^=room]").hide();
 		$("#main ." + roomId).show();
@@ -334,6 +356,12 @@ jQuery(function ($) {
 		titlenotifier.sub(activeUnread);
 		activeUnread = 0;
 	});
+
+	//返信ボタン押下
+	$('[class^=room]').on('click', '[name^=reply]', function() {
+		var replyId = $(this).val();
+		$('[name=replyId]').val(replyId);
+	});
 });
 
 
@@ -344,7 +372,10 @@ jQuery(function ($) {
 <?php endforeach; ?>
 <?=$this->Form->create(null,['type' => 'post']) ?>
 <table id="sendChat">
-	<tr><td><?=$this->Form->input("chatText", ["type" => "textarea",]) ?></td></tr>
+	<tr><td>
+		返信：<?=$this->Form->input("replyId", ["type" => "text", "class" => "smallForm"]) ?><br/>
+		<?=$this->Form->input("chatText", ["type" => "textarea",]) ?>
+	</td></tr>
 	<tr><td><?=$this->Form->input("send", ["type" => "button",]) ?></td></tr>
 </table>
 <?=$this->Form->end() ?>

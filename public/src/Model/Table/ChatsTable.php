@@ -67,7 +67,7 @@ class ChatsTable extends Table
             	'message' => '140文字以内で入力してください。']);
 
         $validator
-            ->integer('replyId')
+        	->integer('replyId', "半角数字で入力してください。")
             ->allowEmpty('replyId');
 
         $validator

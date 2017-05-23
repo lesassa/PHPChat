@@ -29,8 +29,14 @@ use Cake\ORM\TableRegistry;
  */
 class ChatController extends AppController
 {
+	public $Docomo;
 
+	public function initialize()
+	{
+		parent::initialize();
 
+		$this->Docomo = $this->loadComponent('Docomo');
+	}
 
     public function index()
     {
@@ -78,6 +84,7 @@ class ChatController extends AppController
 		    	$msg["roomName"] = $room->roomName;
 		    	$msg["chatNumber"] = $chat->chatNumber;
 		    	$msg["chatText"] = $chat->chatText;
+		    	$msg["replyId"] = $chat->replyId;
 		    	$msg["memberId"] = $chat->memberId;
 		    	$msg["memberName"] = $this->loginTable->memberName;
 
