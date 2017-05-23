@@ -14,6 +14,7 @@
 
 	<!-- javascript -->
 	<?= $this->Html->script('jquery-3.2.1.min.js') ?>
+	<?= $this->Html->script('common.js') ?>
 	<?= $this->Html->script('title_notifier.js') ?>
  	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
  	<?= $this->Html->script('desktop-notify-min.js') ?>

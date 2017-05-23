@@ -131,7 +131,7 @@ jQuery(function ($) {
 	    if (msg["replyId"] == null) {
 		    var chat = [
 		        "<hr>",
-		        "<p>",
+		        "<p class=\"chatNumber" + String(msg["chatNumber"]) + "\">",
 		        String(msg["chatNumber"]) + ":",
 		        String(msg["memberName"]),
 		        " ＜ " + msg["chatText"],
@@ -142,8 +142,8 @@ jQuery(function ($) {
 	    } else {
 		    var chat = [
 		        "<hr>",
-		        "<p>",
-		        ">> " + String(msg["replyId"]) + "<br/>",
+		        "<p class=\"chatNumber" + String(msg["chatNumber"]) + "\">",
+		        "<button type=\"button\" name=\"quotation" + String(msg["replyId"]) + "\" value=\"" + String(msg["replyId"]) + "\" id=\"14\">>> " + String(msg["replyId"]) + "</button><br/>",
 		        String(msg["chatNumber"]) + ":",
 		        String(msg["memberName"]),
 		        " ＜ " + msg["chatText"],
@@ -361,6 +361,12 @@ jQuery(function ($) {
 	$('[class^=room]').on('click', '[name^=reply]', function() {
 		var replyId = $(this).val();
 		$('[name=replyId]').val(replyId);
+	});
+
+	//引用ボタン押下
+	$('[class^=room]').on('click', '[name^=quotation]', function() {
+		var chatNumber = $(this).val();
+		$("html,body").animate({scrollTop:$('[class=room' + room + '] [class=chatNumber' + chatNumber + ']').offset().top}, { duration: 500});
 	});
 });
 
