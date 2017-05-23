@@ -143,6 +143,12 @@ jQuery(function ($) {
 		  	show(msg["roomName"], msg["chatText"]);
 		  	if (parseInt(msg["roomId"]) != room) {
 			  	upUnread(msg["roomId"]);
+			  	titlenotifier.add();
+		  	} else {
+		  		if (!document.hasFocus()) {
+		  			titlenotifier.add();
+		  			activeUnread = activeUnread + 1;
+		  		}
 		  	}
 	    }
 	};
@@ -316,10 +322,18 @@ jQuery(function ($) {
 
 	//未読カウンターリセット
 	function resetUnread(roomId) {
+		var counter = $("#unread" + roomId).text().slice(3);
+		if (counter != ""){
+			titlenotifier.sub(counter);
+		}
 		$("#unread" + roomId).text("");
 	}
 
-
+	var activeUnread = 0;
+	$(window).focusin(function(e) {
+		titlenotifier.sub(activeUnread);
+		activeUnread = 0;
+	});
 });
 
 
