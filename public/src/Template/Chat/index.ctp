@@ -37,7 +37,7 @@ jQuery(function ($) {
 		//エラーがタイムアウトの場合、再接続
 		if(e.code == "1006") {
 			conn.close();
-			location.reload();
+			window.location.href = "http://" + document.domain + ":8765"; // 通常の遷移
 		}
 	};
 
