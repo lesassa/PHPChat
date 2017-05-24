@@ -27,4 +27,11 @@ class ChatShell extends Shell
     	echo "success";
     }
 
+    public function judgeAI()
+    {
+
+
+
+    }
+
 }

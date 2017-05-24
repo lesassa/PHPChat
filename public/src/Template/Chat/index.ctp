@@ -167,6 +167,7 @@ jQuery(function ($) {
 		  		}
 		  	}
 	    }
+
 	};
 
 	//イベント
@@ -215,11 +216,56 @@ jQuery(function ($) {
 	    		conn.send(response);
         		$("[name=chatText]").val('');
         		$("[name=replyId]").val('');
+        	    //AI対話
+        	    if (replyId == "") {
+            	    return;
+        	    }
+        	    $.ajax({
+        	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'chatAI'], true); ?>",
+        	        type: "POST",
+        	        data: {
+                			roomId : msg["roomId"],
+                			replyId : msg["replyId"],
+                			msg : msg["chatText"],
+                			},
+        	        success : function(response){
+        	            //通信成功時の処理
+        	   			//AI対話なし
+        	            if (response == null) {
+        					return;
+        	            }
+        	         	//AI対話あり
+        	           	$.ajax({
+        			        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat', AI_ID], true); ?>",
+        			        type: "POST",
+        			        data: { chatText : response,
+        			        		roomId : msg["roomId"],
+        			        		replyId : msg["chatNumber"],
+        				         },
+        			        success : function(response){
+        			            //通信成功時の処理
+        			    		conn.send(response);
+        			    		return;
+        			        },
+        			        error: function(response){
+        			            //通信失敗時の処理
+        			            alert('通信失敗');
+        			            return;
+        			        }
+        	           	});
+        	        },
+        	        error: function(response){
+        	            //通信失敗時の処理
+        	            alert('AI通信・ログイン情報発信');
+        	            return;
+        	        }
+        	    });
 	        },
 	        error: function(response){
 	            //通信失敗時の処理
 	            alert('通信失敗');
-	            $("[name=chatText]").val(response);	        }
+	            $("[name=chatText]").val(response);
+	        }
 	    });
 	}
 

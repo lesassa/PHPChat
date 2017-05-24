@@ -35,7 +35,7 @@ class ChatController extends AppController
 	{
 		parent::initialize();
 
-		$this->Docomo = $this->loadComponent('Docomo');
+		$this->AI = $this->loadComponent('AI');
 	}
 
     public function index()
@@ -62,23 +62,30 @@ class ChatController extends AppController
 
     }
 
-    public function addChat()
+    public function addChat($memberId = null)
     {
     	$this->autoRender = FALSE;
     	if($this->request->is('ajax')) {
 	    	$ChatsDBI = TableRegistry::get('Chats');
 	    	$chat = $ChatsDBI->newEntity();
-	    	$chat->roomId = $this->request->data["roomId"];;
+	    	$chat->roomId = $this->request->data["roomId"];
 	    	$query = $ChatsDBI->find();
 	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
 	    	$chat->chatNumber = $ret->max_id + 1;
-	    	$chat->memberId = $this->loginTable->memberId;
 	    	$ChatsDBI->patchEntity($chat, $this->request->data);
+	    	if ($memberId == null) {
+		    	$chat->memberId = $this->loginTable->memberId;
+	    	} else {
+	    		$chat->memberId = $memberId;
+	    	}
 	    	if ($ChatsDBI->save($chat)) {
-
+	    		$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ['Members']]);
 
 		    	$RoomsDBI = TableRegistry::get('Rooms');
 		    	$room = $RoomsDBI->get($chat->roomId);
+
+		    	$MembersDBI = TableRegistry::get('Members');
+		    	$member = $MembersDBI->get($chat->memberId);
 
 		    	$msg["roomId"] = $chat->roomId;
 		    	$msg["roomName"] = $room->roomName;
@@ -86,7 +93,7 @@ class ChatController extends AppController
 		    	$msg["chatText"] = $chat->chatText;
 		    	$msg["replyId"] = $chat->replyId;
 		    	$msg["memberId"] = $chat->memberId;
-		    	$msg["memberName"] = $this->loginTable->memberName;
+		    	$msg["memberName"] = $member->memberName;
 
 		    	echo json_encode($msg);
 	    	} else {
@@ -154,6 +161,23 @@ class ChatController extends AppController
     	}
     }
 
+    public function chatAI()
+    {
+    	$this->autoRender = FALSE;
+    	if($this->request->is('ajax')) {
 
+    		//AI判定
+    		$roomId = $this->request->data["roomId"];
+    		$chatNumbaer = $this->request->data["replyId"];
+    		$ChatDBI = TableRegistry::get('Chats');
+    		$chat = $ChatDBI->get([$roomId, $chatNumbaer]);
+
+
+    		if ($chat->memberId == AI_ID) {
+    			$reply =  $this->AI->talkAI($this->request->data["msg"]);
+    		}
+    		echo $reply;
+    	}
+    }
 
 }
