@@ -128,7 +128,7 @@ jQuery(function ($) {
 		}
 
 	    //通常メッセージを受信した場合
-	    if (msg["replyId"] == null) {
+	    if (msg["replyId"] == null || msg["replyId"] == 0) {
 		    var chat = [
 		        "<hr>",
 		        "<p class=\"chatNumber" + String(msg["chatNumber"]) + "\">",
@@ -272,7 +272,7 @@ jQuery(function ($) {
 	//疎通確認
 	var ping = function(){
 	    conn.send("ping");
-	    setTimeout(ping, 180000);
+	    setTimeout(ping, 150000);
 	  }
 
 

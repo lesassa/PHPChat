@@ -38,6 +38,7 @@ class DocomoComponent  extends Component
 						'method'  => 'POST',
 						'header'  => implode( "\r\n", $headers ),
 						'content' => json_encode($req_body),
+						'proxy' => 'tkyproxy.intra.tis.co.jp:8080',
 				)
 		);
 		$stream = stream_context_create( $options );
