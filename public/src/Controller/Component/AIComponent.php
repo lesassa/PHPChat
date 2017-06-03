@@ -2,11 +2,14 @@
 namespace App\Controller\Component;
 
 use Cake\Controller\Component;
+use PHPExcel_IOFactory;
 
 class AIComponent  extends Component
 {
 
-	const API_KEY = '57594a4f6537617377586247376c6561474e6774436a6c4839794d6e472f3364366b67726d6a6e54566f2f';
+
+
+	const FILE = "C:/Users/nowko/Dropbox/WorkSpace/CakePHP/doc/test.xlsx";
 
 
 	public $components = ['Log', 'Docomo'];
@@ -20,7 +23,17 @@ class AIComponent  extends Component
 	 */
 	function talkAI($text) {
 
+		if ($text == "excel") {
+			$obj = PHPExcel_IOFactory::createReader('Excel2007');
+			$book = $obj->load(self::FILE);
 
+			//シートを設定する
+			$book->setActiveSheetIndex(0);//一番最初のシートを選択
+			$sheet = $book->getActiveSheet();//選択シートにアクセスを開始
+			$cell = $sheet->getCell('A1');
+			$reply = $cell->getValue();
+			return $reply;
+		}
 
 		//DOCOMOAI
 		$reply = $this->Docomo->talk($text);

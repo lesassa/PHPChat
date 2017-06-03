@@ -1,0 +1,22 @@
+Microsoft Windows [Version 10.0.15063]
+(c) 2017 Microsoft Corporation. All rights reserved.
+
+C:\Users\nowko>cd C:\Users\nowko\Dropbox\WorkSpace\CakePHP\public
+
+C:\Users\nowko\Dropbox\WorkSpace\CakePHP\public>composer require phpoffice/phpexcel
+Using version [32m^1.8[39m for [32mphpoffice/phpexcel[39m
+[32m./composer.json has been updated[39m
+[32mLoading composer repositories with package information[39m
+[32mUpdating dependencies (including require-dev)[39m
+  - Installing [32mphpoffice/phpexcel[39m ([33m1.8.1[39m)
+    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m40%[39m    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downlo    Downloading: [33m90%[39m    Downlo    Downloading: [33m100%[39m
+
+[30;43mPackage guzzle/common is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/stream is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/parser is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[30;43mPackage guzzle/http is abandoned, you should avoid using it. Use guzzle/guzzle instead.[39;49m
+[32mWriting lock file[39m
+[32mGenerating autoload files[39m
+> Cake\Composer\Installer\PluginInstaller::postAutoloadDump
+
+C:\Users\nowko\Dropbox\WorkSpace\CakePHP\public>
