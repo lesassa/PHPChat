@@ -28,9 +28,9 @@ use Composer\Autoload\AutoloadGenerator;
  */
 class Composer
 {
-    const VERSION = '1.4.1';
+    const VERSION = '1.4.2';
     const BRANCH_ALIAS_VERSION = '';
-    const RELEASE_DATE = '2017-03-10 09:29:45';
+    const RELEASE_DATE = '2017-05-17 08:17:52';
 
     /**
      * @var Package\RootPackageInterface

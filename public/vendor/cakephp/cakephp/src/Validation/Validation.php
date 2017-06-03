@@ -431,7 +431,7 @@ class Validation
         $regex['ym'] = '%^(' . $year . $separator . $month . ')$%';
         $regex['y'] = '%^(' . $fourDigitYear . ')$%';
 
-        $format = (is_array($format)) ? array_values($format) : [$format];
+        $format = is_array($format) ? array_values($format) : [$format];
         foreach ($format as $key) {
             if (static::_check($check, $regex[$key]) === true) {
                 return true;
@@ -608,7 +608,7 @@ class Validation
                 $regex = "/^{$sign}(?:{$lnum}|{$dnum}){$exp}$/";
             } elseif ($places === true) {
                 if (is_float($check) && floor($check) === $check) {
-                    $check = sprintf("%.1f", $check);
+                    $check = sprintf('%.1f', $check);
                 }
                 $regex = "/^{$sign}{$dnum}{$exp}$/";
             } elseif (is_numeric($places)) {
@@ -1428,6 +1428,17 @@ class Validation
     public static function isArray($value)
     {
         return is_array($value);
+    }
+
+    /**
+     * Check that the input value is a 6 digits hex color.
+     *
+     * @param string|array $check The value to check
+     * @return bool Success
+     */
+    public static function hexColor($check)
+    {
+        return static::_check($check, '/^#[0-9a-f]{6}$/iD');
     }
 
     /**

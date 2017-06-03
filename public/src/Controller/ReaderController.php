@@ -22,7 +22,7 @@ class ReaderController extends AppController
 	{
 		parent::initialize();
 
-		$this->Auth->allow(['login', "error", "createMember"]);
+		$this->Auth->allow(['login', "error", "createMember", "bot", "addbot"]);
 	}
 
     /**
@@ -95,5 +95,26 @@ class ReaderController extends AppController
 		$this->set('member', $member);
 	}
 
+	public function bot()
+	{
+		$this->viewBuilder()->layout('defaultLogin');
+	}
 
+	public function addbot()
+	{
+		$this->autoRender = FALSE;
+		// post.php ???
+		// This all was here before  ;)
+		$entryData = array(
+				'topic' => "topic_2"
+				, 'msg'    => "テスト"
+		);
+
+		// This is our new stuff
+		$context = new \ZMQContext();
+		$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
+		$socket->connect("tcp://localhost:5555");
+
+		$socket->send(json_encode($entryData));
+	}
 }

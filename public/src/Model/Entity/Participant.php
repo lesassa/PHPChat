@@ -7,7 +7,6 @@ use Cake\ORM\Entity;
  * Participant Entity
  *
  * @property int $memberId
- * @property int $roomId
  * @property int $resourceId
  */
 class Participant extends Entity
@@ -24,8 +23,7 @@ class Participant extends Entity
      */
     protected $_accessible = [
         '*' => true,
-        'memberId' => false,
-    	'roomId' => true,
+        'memberId' => true,
     	'resourceId' => true
     ];
 }

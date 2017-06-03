@@ -18,10 +18,9 @@ class ParticipantsFixture extends TestFixture
     // @codingStandardsIgnoreStart
     public $fields = [
         'memberId' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
-        'roomId' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         'resourceId' => ['type' => 'integer', 'length' => 11, 'unsigned' => false, 'null' => false, 'default' => null, 'comment' => '', 'precision' => null, 'autoIncrement' => null],
         '_constraints' => [
-            'primary' => ['type' => 'primary', 'columns' => ['memberId', 'roomId', 'resourceId'], 'length' => []],
+            'primary' => ['type' => 'primary', 'columns' => ['memberId', 'resourceId'], 'length' => []],
         ],
         '_options' => [
             'engine' => 'InnoDB',
@@ -38,7 +37,6 @@ class ParticipantsFixture extends TestFixture
     public $records = [
         [
             'memberId' => 1,
-            'roomId' => 1,
             'resourceId' => 1
         ],
     ];

@@ -116,7 +116,7 @@ class Shell
      *
      * @var string
      */
-    public $name = null;
+    public $name;
 
     /**
      * The name of the plugin the shell belongs to.
@@ -124,7 +124,7 @@ class Shell
      *
      * @var string
      */
-    public $plugin = null;
+    public $plugin;
 
     /**
      * Contains tasks to load and instantiate
@@ -528,9 +528,8 @@ class Shell
     public function getOptionParser()
     {
         $name = ($this->plugin ? $this->plugin . '.' : '') . $this->name;
-        $parser = new ConsoleOptionParser($name);
 
-        return $parser;
+        return new ConsoleOptionParser($name);
     }
 
     /**
@@ -761,7 +760,7 @@ class Shell
      * @throws \Cake\Console\Exception\StopException
      * @return int Error code
      * @link http://book.cakephp.org/3.0/en/console-and-shells.html#styling-output
-     * @deprecated Since 3.2.0. Use Shell::abort() instead.
+     * @deprecated 3.2.0 Use Shell::abort() instead.
      */
     public function error($title, $message = null, $exitCode = self::CODE_ERROR)
     {

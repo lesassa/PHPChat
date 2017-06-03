@@ -37,7 +37,7 @@ class DateTimeType extends Type implements TypeInterface
      *
      * @var string|null
      */
-    protected $_name = null;
+    protected $_name;
 
     /**
      * The class to use for representing date objects
@@ -46,7 +46,7 @@ class DateTimeType extends Type implements TypeInterface
      * class is constructed. After that use `useMutable()` or `useImmutable()` instead.
      *
      * @var string
-     * @deprecated Use DateTimeType::useMutable() or DateTimeType::useImmutable() instead.
+     * @deprecated 3.2.0 Use DateTimeType::useMutable() or DateTimeType::useImmutable() instead.
      */
     public static $dateTimeClass = 'Cake\I18n\Time';
 
@@ -156,7 +156,8 @@ class DateTimeType extends Type implements TypeInterface
             $compare = $date = false;
             if ($value === '' || $value === null || $value === false || $value === true) {
                 return null;
-            } elseif (is_numeric($value)) {
+            }
+            if (is_numeric($value)) {
                 $date = new $class('@' . $value);
             } elseif (is_string($value) && $this->_useLocaleParser) {
                 return $this->_parseValue($value);

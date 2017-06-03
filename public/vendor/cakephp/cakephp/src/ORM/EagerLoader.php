@@ -42,7 +42,7 @@ class EagerLoader
      *
      * @var \Cake\ORM\EagerLoadable[]|\Cake\ORM\EagerLoadable|null
      */
-    protected $_normalized = null;
+    protected $_normalized;
 
     /**
      * List of options accepted by associations in contain()
@@ -828,5 +828,19 @@ class EagerLoader
         $statement->rewind();
 
         return $keys;
+    }
+
+    /**
+     * Clone hook implementation
+     *
+     * Clone the _matching eager loader as well.
+     *
+     * @return void
+     */
+    public function __clone()
+    {
+        if ($this->_matching) {
+            $this->_matching = clone $this->_matching;
+        }
     }
 }

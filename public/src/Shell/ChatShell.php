@@ -24,6 +24,17 @@ class ChatShell extends Shell
     	}
 
 
+    	echo $participant->memberId;
+    }
+
+    public function login()
+    {
+    	$ParticipantsDBI = TableRegistry::get('Participants');
+    	$participant = $ParticipantsDBI->newEntity();
+    	$participant->resourceId = $this->args[0];
+    	$participant->memberId = $this->args[1];
+    	$ParticipantsDBI->save($participant);
+
     	echo "success";
     }
 
