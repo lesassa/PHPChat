@@ -11,7 +11,8 @@
         "cakephp/migrations": "~1.0",
         "cakephp/plugin-installer": "*",
         "cboden/ratchet": "*",
-        "react/zmq": "0.2.*|0.3.*"
+        "react/zmq": "0.2.*|0.3.*",
+        "phpoffice/phpexcel": "^1.8"
     },
     "require-dev": {
         "psy/psysh": "@stable",

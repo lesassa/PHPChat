@@ -280,6 +280,13 @@ class ComposerStaticInit3f40a1dff87e3e398c3cdc655af57e85
                 0 => __DIR__ . '/..' . '/react/zmq/src',
             ),
         ),
+        'P' => 
+        array (
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
+        ),
         'M' => 
         array (
             'MyApp' => 
