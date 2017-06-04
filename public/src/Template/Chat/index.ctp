@@ -461,13 +461,30 @@ jQuery(function ($) {
         }
     }
 
+	//エンターキーの送信
+	$("[name=chatText],[name=replyId]").on("keydown", function(e) {
+
+		//エンターを押下
+		if(e.keyCode === 13) {
+			//シフト＋エンターは送信しない
+			if (e.shiftKey) {
+				return true;
+			}
+			$("#send").trigger('click');
+
+			return false;
+		}
+	});
+
 	//送信ボタン処理
 	$("#send").click(send);
 
 	//送信処理
     function send() {
+
     	var msg = $("[name=chatText]").val();
 		var replyId = $("[name=replyId]").val();
+
 
         console.log("-- Publish --");
         console.log("Topic: " + room);
@@ -490,8 +507,8 @@ jQuery(function ($) {
 				//メッセージなし
 				if (response == "") {
 					//フォームリセット
-	        		$("[name=chatText]").val('');
-	        		$("[name=replyId]").val('');
+					$("[name=chatText]").val('');
+					$("[name=replyId]").val('');
 					return;
 				}
 
@@ -567,18 +584,6 @@ jQuery(function ($) {
 		});
 	});
 
-	//エンターキーの送信
-	$("[name=chatText]").on("keydown", function(e) {
-		//エンターを押下
-		if(e.keyCode === 13) {
-			//シフト＋エンターは送信しない
-			if (e.shiftKey) {
-				return true;
-			}
-			send();
-			return false;
-		}
-	});
 
 
 
