@@ -38,6 +38,12 @@ class ParticipantsTable extends Table
         		'className' => 'Members',
         		'foreignKey' => 'memberId',
         ]);
+
+        $this->hasMany('Subscribes', [
+        		'className' => 'Subscribes',
+        		'foreignKey' => 'memberId',
+        		'bindingKey' => "memberId",
+        ]);
     }
 
     /**

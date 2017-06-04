@@ -29,7 +29,7 @@ use Cake\ORM\TableRegistry;
  */
 class ChatController extends AppController
 {
-	public $Docomo;
+	public $AI;
 
 	public function initialize()
 	{
@@ -38,22 +38,27 @@ class ChatController extends AppController
 		$this->AI = $this->loadComponent('AI');
 	}
 
+	/**
+	 * 画面初期表示処理
+	 */
     public function index()
     {
-
+    	//ルームを全取得
     	$RoomsDBI = TableRegistry::get('Rooms');
-    	$rooms = $RoomsDBI->find('all');
+    	$rooms = $RoomsDBI->find()->all();
 
+    	//チャットを取得
     	$roomsWithChats = array();
     	foreach ($rooms as $room) {
 
+    		//購読ルームを取得
     		$SubscribesDBI = TableRegistry::get('Subscribes');
     		$subscribe = $SubscribesDBI->find()->where(["roomId =" => $room->roomId])->andWhere(["memberId =" => $this->loginTable->memberId]);
     		if (!$subscribe->count()) {
-    			$room->chats = [];
+    			$room->chats = array();
     			$roomsWithChats[$room->roomId] = $room;
-				continue;
-			}
+    			continue;
+    		}
 
 	    	$ChatsDBI = TableRegistry::get('Chats');
 	    	$query = $ChatsDBI->find();
@@ -61,309 +66,304 @@ class ChatController extends AppController
 	    	$chats = $ChatsDBI->find()->where(["roomId =" => $room->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'DESC']);;
 	    	$room->chats = $chats;
 	    	$roomsWithChats[$room->roomId] = $room;
-
     	}
     	$this->set('rooms', $roomsWithChats);
-    	$this->set('loginTable', $this->loginTable);
-
-
     }
 
+    /**
+     * AJAXチャット送信（保存）
+     */
     public function addChat()
     {
+    	//AJAX精査
     	$this->autoRender = FALSE;
-    	if($this->request->is('ajax')) {
+    	if(!$this->request->is('ajax')) {
+    		return;
+    	}
 
-    		//DB登録
-	    	$ChatsDBI = TableRegistry::get('Chats');
-	    	$chat = $ChatsDBI->newEntity();
-	    	$chat->roomId = $this->request->data["roomId"];
-	    	$query = $ChatsDBI->find();
-	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
-	    	$chat->chatNumber = $ret->max_id + 1;
-	    	$ChatsDBI->patchEntity($chat, $this->request->data);
-	    	$chat->memberId = $this->loginTable->memberId;
+    	//DB登録
+	    $ChatsDBI = TableRegistry::get('Chats');
+	    $chat = $ChatsDBI->newEntity($this->request->data);
+	    $query = $ChatsDBI->find();
+	    $ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
+	    $chat->chatNumber = $ret->max_id + 1;
+	    $chat->memberId = $this->loginTable->memberId;
 
-	    	if ($ChatsDBI->save($chat)) {
+	    //ログ出力
+	    $this->Log->outputLog("chat = [".print_r($chat, true)."]");
+
+	    if ($ChatsDBI->save($chat)) {
+
+		    $RoomsDBI = TableRegistry::get('Rooms');
+		    $room = $RoomsDBI->get($chat->roomId);
+
+		    $MembersDBI = TableRegistry::get('Members');
+		    $member = $MembersDBI->get($chat->memberId);
+
+		    //チャットサーバに送信
+		    $msg["roomId"] = $chat->roomId;
+		    $msg["roomName"] = $room->roomName;
+		    $msg["chatNumber"] = $chat->chatNumber;
+		    $msg["chatText"] = $chat->chatText;
+		    $msg["replyId"] = $chat->replyId;
+		    $msg["memberId"] = $chat->memberId;
+		    $msg["memberName"] = $member->memberName;
+		    $this->sendByZMQ($msg);
+
+		    //AIへの返信の場合
+		    //AI判定
+		    if($chat->memberId == AI_ID) {
+		    	return;
+		    }
+		    if ($chat->replyId == "" || $chat->replyId == 0) {
+		    	return;
+		    }
+		    $originalChat = $ChatsDBI->get([$chat->roomId, $chat->replyId], ["contain" => ["Members"]]);
+		    if ($originalChat->memberId != AI_ID) {
+		    	return;
+		    }
+
+		    //ログ出力
+		    $this->Log->outputLog("AI TALK START");
+
+		    //AI対話
+		    $reply =  $this->AI->talkAI($chat->chatText);
+
+		    //DB登録
+		    $replyChat = $ChatsDBI->newEntity();
+		    $replyChat->roomId = $chat->roomId;
+		    $query = $ChatsDBI->find();
+		    $ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
+		    $replyChat->chatNumber = $ret->max_id + 1;
+		    $replyChat->chatText = $reply;
+		    $replyChat->replyId = $chat->chatNumber;
+		    $replyChat->memberId = AI_ID;
+
+		    if ($ChatsDBI->save($replyChat)) {
 
 		    	//ログ出力
-		    	$this->Log->outputLog("chat = [".print_r($chat, true)."]");
-
-	    		$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ['Members']]);
-
-		    	$RoomsDBI = TableRegistry::get('Rooms');
-		    	$room = $RoomsDBI->get($chat->roomId);
-
-		    	$MembersDBI = TableRegistry::get('Members');
-		    	$member = $MembersDBI->get($chat->memberId);
-
-		    	$msg["roomId"] = $chat->roomId;
-		    	$msg["roomName"] = $room->roomName;
-		    	$msg["chatNumber"] = $chat->chatNumber;
-		    	$msg["chatText"] = $chat->chatText;
-		    	$msg["replyId"] = $chat->replyId;
-		    	$msg["memberId"] = $chat->memberId;
-		    	$msg["memberName"] = $member->memberName;
+		    	$this->Log->outputLog("AI reply = [".print_r($replyChat, true)."]");
 
 		    	//チャットサーバに送信
-		    	$context = new \ZMQContext();
-		    	$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-		    	$socket->connect("tcp://localhost:5555");
-		    	$socket->send(json_encode($msg));
-		    	echo json_encode([]);
+		    	$replyMsg["roomId"] = $replyChat->roomId;
+		    	$replyMsg["roomName"] = $room->roomName;
+		    	$replyMsg["chatNumber"] = $replyChat->chatNumber;
+		    	$replyMsg["chatText"] = $replyChat->chatText;
+		    	$replyMsg["replyId"] = $replyChat->replyId;
+		    	$replyMsg["memberId"] = $replyChat->memberId;
+		    	$replyMsg["memberName"] = $originalChat->member->memberName;
+		    	$this->sendByZMQ($replyMsg);
+		    }
+	    }
 
-		    	//AIへの返信の場合
-		    	//AI判定
-		    	if($chat->memberId == AI_ID) {
-		    		return;
-		    	}
-		    	if ($chat->replyId == "" || $chat->replyId == 0) {
-		    		return;
-		    	}
-		    	$originalChat = $ChatsDBI->get([$chat->roomId, $chat->replyId], ["contain" => ["Members"]]);
-		    	if ($originalChat->memberId != AI_ID) {
-					return;
-		    	}
-
-		    	//ログ出力
-		    	$this->Log->outputLog("AI TALK START");
-
-		    	//AI対話
-		    	$reply =  $this->AI->talkAI($chat->chatText);
-
-		    	//DB登録
-		    	$member = $MembersDBI->get(AI_ID);
-		    	$replyChat = $ChatsDBI->newEntity();
-		    	$replyChat->roomId = $chat->roomId;
-		    	$query = $ChatsDBI->find();
-		    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $chat->roomId])->first();
-		    	$replyChat->chatNumber = $ret->max_id + 1;
-		    	$replyChat->chatText = $reply;
-		    	$replyChat->replyId = $chat->chatNumber;
-		    	$replyChat->memberId = AI_ID;
-
-		    	if ($ChatsDBI->save($replyChat)) {
-
-		    		//ログ出力
-		    		$this->Log->outputLog("AI reply = [".print_r($replyChat, true)."]");
-
-			    	$replyMsg["roomId"] = $replyChat->roomId;
-			    	$replyMsg["roomName"] = $room->roomName;
-			    	$replyMsg["chatNumber"] = $replyChat->chatNumber;
-			    	$replyMsg["chatText"] = $replyChat->chatText;
-			    	$replyMsg["replyId"] = $replyChat->replyId;
-			    	$replyMsg["memberId"] = $replyChat->memberId;
-			    	$replyMsg["memberName"] = $originalChat->member->memberName;
-
-			    	//チャットサーバに送信
-			    	$context = new \ZMQContext();
-			    	$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-			    	$socket->connect("tcp://localhost:5555");
-			    	$socket->send(json_encode($replyMsg));
-
-		    	} else {
-
-		    		//ログ出力
-		    		$this->Log->outputLog($chat->errors());
-
-		    	}
-
-	    	} else {
-
-	    		//ログ出力
-	    		$this->Log->outputLog($chat->errors());
-
-	    		echo json_encode(["errors" =>$chat->errors()]);
-	    	}
-    	}
+	    //エラーメッセージ返信
+	    echo json_encode(["errors" =>$chat->errors()]);
     }
 
 
-    public function enter()
-    {
-    	$this->autoRender = FALSE;
-    	if($this->request->is('ajax')) {
-    		$SubscribesDBI = TableRegistry::get('Subscribes');
-    		$subscribes = $SubscribesDBI->find()->where(["memberId =" => $this->loginTable->memberId]);
 
-    		$MembersDBI = TableRegistry::get('Members');
-    		$member = $MembersDBI->get($participant->memberId);
+//     public function enter()
+//     {
+//     	//AJAX精査
+//     	$this->autoRender = FALSE;
+//     	if(!$this->request->is('ajax')) {
+//     		return;
+//     	}
 
-    		$msg = ["login" => true,];
-    		foreach ($subscribes as $subscribe) {
-	    		$msg[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $member->memberName];
-    		}
+//     	$SubscribesDBI = TableRegistry::get('Subscribes');
+//     	$subscribes = $SubscribesDBI->find()->where(["memberId =" => $this->loginTable->memberId]);
 
-    		//チャットサーバに送信
-    		$context = new \ZMQContext();
-    		$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-    		$socket->connect("tcp://localhost:5555");
-    		$socket->send(json_encode($msg));
-    		echo 0;
-    	}
-    }
+//     	$MembersDBI = TableRegistry::get('Members');
+//     	$member = $MembersDBI->get($participant->memberId);
 
+//     	$msg = ["login" => true,];
+//     	foreach ($subscribes as $subscribe) {
+// 	    	$msg[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $member->memberName];
+//     	}
+
+//     	//チャットサーバに送信
+//     	$this->sendByZMQ($msg);
+//     	echo 0;
+//     }
+
+    /**
+     * AJAXログイン情報取得
+     */
     public function getParticipants()
     {
+    	//AJAX精査
     	$this->autoRender = FALSE;
-    	if($this->request->is('ajax')) {
-    		sleep(1);//前回ログアウトを待つ
-    		$ParticipantsDBI = TableRegistry::get('Participants');
-    		$participants = $ParticipantsDBI->find("all")->contain(['Members']);
-    		$SubscribesDBI = TableRegistry::get('Subscribes');
-    		$members = array();
-    		foreach ($participants as $participant) {
-
-    			if ($participant->memberId == $this->loginTable->memberId) {
-    				//ログ出力
-    				$this->Log->outputLog($participant->memberId);
-    				$this->Log->outputLog($this->loginTable->memberId);
-					continue;
-    			}
-
-    			$subscribes = $SubscribesDBI->find()->where(["memberId =" => $this->loginTable->memberId]);
-
-    			foreach ($subscribes as $subscribe) {
-	    			$member = array();
-	    			$member["memberId"] = $subscribe->memberId;
-	    			$member["roomId"] = $subscribe->roomId;
-	    			$member["memberName"] = $participant->member->memberName;
-	    			$members[] = $member;
-    			}
-
-    			$member = array();
-    			$member["memberId"] = $participant->memberId;
-    			$member["roomId"] = "9999";
-    			$member["memberName"] = $participant->member->memberName;
-    			$members[] = $member;
-
-			}
-			$this->response->body(json_encode($members));
+    	if(!$this->request->is('ajax')) {
+    		return;
     	}
-    }
 
-
-    public function createRoom()
-    {
-    	$this->autoRender = FALSE;
-    	if($this->request->is('ajax')) {
-    		$RoomsDBI = TableRegistry::get('Rooms');
-    		$room = $RoomsDBI->newEntity($this->request->data);
-    		if ($RoomsDBI->save($room)) {
-
-    			$msg["roomId"] = $room->roomId;
-    			$msg["roomName"] = $room->roomName;
-    			$msg["roomDescription"] = $room->roomDescription;
-    			$msg["roomCreate"] = true;
-
-    			//チャットサーバに送信
-    			$context = new \ZMQContext();
-    			$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-    			$socket->connect("tcp://localhost:5555");
-    			$socket->send(json_encode($msg));
-    			echo 0;
-
-    		} else {
-    			//ログ出力
-    			$this->Log->outputLog($room->errors());
-
-    			echo json_encode(["errors" =>$room->errors()]);
-    		}
-
-    	}
-    }
-
-    public function saveSubscribe()
-    {
-    	$this->autoRender = FALSE;
-    	if($this->request->is('ajax')) {
-    		$SubscribesDBI = TableRegistry::get('Subscribes');
-    		$subscribe = $SubscribesDBI->newEntity($this->request->data);
-    		$subscribe->memberId = $this->loginTable->memberId;
-    		$SubscribesDBI->save($subscribe);
-
-    		$MembersDBI = TableRegistry::get('Members');
-    		$member = $MembersDBI->get($subscribe->memberId);
-
-    		$msg = ["loginId" => true,];
-    		$msg[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $member->memberName];
-
-    		//チャットサーバに送信
-    		$context = new \ZMQContext();
-    		$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-    		$socket->connect("tcp://localhost:5555");
-    		$socket->send(json_encode($msg));
-
+    	sleep(1);//前回ログアウトを待つ
+    	$ParticipantsDBI = TableRegistry::get('Participants');
+    	$participants = $ParticipantsDBI->find()->contain(['Members', "Subscribes"])->all();
+    	$members = array();
+    	foreach ($participants as $participant) {
 
     		//ログ出力
-    		$this->Log->outputLog($subscribe->errors());
+    		$this->Log->outputLog("participant = [".print_r($participant, true)."]");
 
-    		$ChatsDBI = TableRegistry::get('Chats');
-    		$query = $ChatsDBI->find();
-    		$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $subscribe->roomId])->first();
-    		$chats = $ChatsDBI->find()->where(["roomId =" => $subscribe->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'ASC']);
-    		$chatsArray = array();
-    		foreach ($chats as $chat) {
-    			$chatArray = array();
-    			$chatArray["roomId"] = $chat->roomId;
-    			$chatArray["replyId"] = $chat->replyId;
-    			$chatArray["chatNumber"] = $chat->chatNumber;
-    			$chatArray["memberName"] = $chat->member->memberName;
-    			$chatArray["chatText"] = $chat->chatText;
-    			$chatsArray[] = $chatArray;
+    		//自身のログイン情報を排除
+    		if ($participant->memberId == $this->loginTable->memberId) {
+				continue;
     		}
-    		echo json_encode($chatsArray);
-    	}
+
+    		//ログイン情報に紐づく購読ルームを取得
+    		foreach ($participant->subscribes as $subscribe) {
+	    		$member = array();
+	    		$member["memberId"] = $subscribe->memberId;
+	    		$member["roomId"] = $subscribe->roomId;
+	    		$member["memberName"] = $participant->member->memberName;
+	    		$members[] = $member;
+    		}
+
+    		//ログイン情報と表紙を紐づけ
+    		$member = array();
+    		$member["memberId"] = $participant->memberId;
+    		$member["roomId"] = "9999";
+    		$member["memberName"] = $participant->member->memberName;
+    		$members[] = $member;
+		}
+
+		$this->response->body(json_encode($members));
     }
 
+
+    /**
+     * AJAXルーム作成
+     */
+    public function createRoom()
+    {
+    	//AJAX精査
+    	$this->autoRender = FALSE;
+    	if(!$this->request->is('ajax')) {
+    		return;
+    	}
+
+    	//ルーム作成
+    	$RoomsDBI = TableRegistry::get('Rooms');
+    	$room = $RoomsDBI->newEntity($this->request->data);
+    	if ($RoomsDBI->save($room)) {
+
+    		//ログ出力
+    		$this->Log->outputLog("room = [".print_r($room, true)."]");
+
+    		//チャットサーバに送信
+    		$msg["roomId"] = $room->roomId;
+    		$msg["roomName"] = $room->roomName;
+    		$msg["roomDescription"] = $room->roomDescription;
+    		$msg["roomCreate"] = true;
+    		$this->sendByZMQ($msg);
+    	}
+
+    	echo json_encode(["errors" =>$room->errors()]);
+    }
+
+    /**
+     * AJAX購読ルームのい保存
+     */
+    public function saveSubscribe()
+    {
+    	//AJAX精査
+    	$this->autoRender = FALSE;
+    	if(!$this->request->is('ajax')) {
+    		return;
+    	}
+
+    	$SubscribesDBI = TableRegistry::get('Subscribes');
+    	$subscribe = $SubscribesDBI->newEntity($this->request->data);
+    	$subscribe->memberId = $this->loginTable->memberId;
+    	$SubscribesDBI->save($subscribe);
+
+    	//ログ出力
+    	$this->Log->outputLog("subscribe = [".print_r($subscribe, true)."]");
+
+    	//入室情報送信
+    	//チャットサーバに送信
+    	$MembersDBI = TableRegistry::get('Members');
+    	$member = $MembersDBI->get($subscribe->memberId);
+    	$msg = ["loginId" => true,];
+    	$msg[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $member->memberName];
+    	$this->sendByZMQ($msg);
+
+    	//既出のチャットの取得
+    	$ChatsDBI = TableRegistry::get('Chats');
+    	$query = $ChatsDBI->find();
+    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $subscribe->roomId])->first();
+    	$chats = $ChatsDBI->find()->where(["roomId =" => $subscribe->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'ASC']);
+    	$chatsArray = array();
+    	foreach ($chats as $chat) {
+    		$chatArray = array();
+    		$chatArray["roomId"] = $chat->roomId;
+    		$chatArray["replyId"] = $chat->replyId;
+    		$chatArray["chatNumber"] = $chat->chatNumber;
+    		$chatArray["memberName"] = $chat->member->memberName;
+    		$chatArray["chatText"] = $chat->chatText;
+    		$chatsArray[] = $chatArray;
+    	}
+    	echo json_encode($chatsArray);
+    }
+
+    /**
+     * AJAX購読ルームの取得
+     */
     public function getSubscribes()
     {
+    	//AJAX精査
+    	sleep(1);//前回ログアウトを待つ
     	$this->autoRender = FALSE;
-    	if($this->request->is('ajax')) {
-    		$SubscribesDBI = TableRegistry::get('Subscribes');
-    		$subscribes = $SubscribesDBI->find()->where(["memberId =" => $this->loginTable->memberId]);
-
-
-    		$participants = ["loginId" => true,];
-    		$msg = array();
-
-    		$MembersDBI = TableRegistry::get('Members');
-    		$member = $MembersDBI->get($this->loginTable->memberId);
-
-			foreach($subscribes as $subscribe) {
-				$msg[] = $subscribe->roomId;
-				$participants[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $member->memberName];
-			}
-			$participants[] = ["roomId" => "9999", "memberId" => $this->loginTable->memberId, "memberName" => $member->memberName];
-
-			//チャットサーバに送信
-			$context = new \ZMQContext();
-			$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-			$socket->connect("tcp://localhost:5555");
-			$socket->send(json_encode($participants));
-
-			echo json_encode($msg);
+    	if(!$this->request->is('ajax')) {
+    		return;
     	}
+
+    	//購読ルーム取得
+    	$SubscribesDBI = TableRegistry::get('Subscribes');
+    	$subscribes = $SubscribesDBI->find()->where(["Subscribes.memberId =" => $this->loginTable->memberId])->contain("Members");
+
+    	//入室情報送信
+    	//チャットサーバに送信
+    	$participants = ["loginId" => true,];
+    	$msg = array();
+		foreach($subscribes as $subscribe) {
+			$msg[] = $subscribe->roomId;
+			$participants[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $subscribe->member->memberName];
+		}
+		$participants[] = ["roomId" => "9999", "memberId" => $this->loginTable->memberId, "memberName" => $subscribe->member->memberName];
+		$this->sendByZMQ($participants);
+
+		echo json_encode($msg);
     }
 
     public function unsubscribe()
     {
+    	//AJAX精査
     	$this->autoRender = FALSE;
-    	if($this->request->is('ajax')) {
-    		$SubscribesDBI = TableRegistry::get('Subscribes');
-    		$subscribe = $SubscribesDBI->get([$this->loginTable->memberId, $this->request->data["roomId"]]);
-    		$SubscribesDBI->delete($subscribe);
-
-    		$msg = ["unsubscribeId" => true, "roomId" => $this->request->data["roomId"], "memberId" =>$this->loginTable->memberId];
-
-    		//チャットサーバに送信
-    		$context = new \ZMQContext();
-    		$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
-    		$socket->connect("tcp://localhost:5555");
-    		$socket->send(json_encode($msg));
-
+    	if(!$this->request->is('ajax')) {
+    		return;
     	}
+
+    	//購読ルーム削除
+    	//チャットサーバに送信
+    	$SubscribesDBI = TableRegistry::get('Subscribes');
+    	$subscribe = $SubscribesDBI->get([$this->loginTable->memberId, $this->request->data["roomId"]]);
+    	$SubscribesDBI->delete($subscribe);
+    	$msg = ["unsubscribeId" => true, "roomId" => $this->request->data["roomId"], "memberId" =>$this->loginTable->memberId];
+    	$this->sendByZMQ($participants);
     }
 
-
+    /**
+     * ZMQでチャットサーバーに送信
+     * @param array $msg 送信メッセージ（項目名と値の連想配列）
+     */
+    private function sendByZMQ(array $msg)
+    {
+    	//チャットサーバに送信
+    	$context = new \ZMQContext();
+    	$socket = $context->getSocket(\ZMQ::SOCKET_PUSH, 'my pusher');
+    	$socket->connect("tcp://localhost:5555");
+    	$socket->send(json_encode($msg));
+    }
 }

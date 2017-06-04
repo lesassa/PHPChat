@@ -30,7 +30,7 @@ class Chat extends Entity
      */
     protected $_accessible = [
         '*' => true,
-        'roomId' => false,
+    	'roomId' => true,
         'chatNumber' => false
     ];
 }

@@ -61,6 +61,35 @@ jQuery(function ($) {
 		        }
 			});
 
+			//現ログイン情報取得
+		    $.ajax({
+		        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'getParticipants'], true); ?>",
+		        type: "POST",
+		        data: { roomId : room,
+			         },
+		        success : function(response){
+		            //通信成功時の処理
+		        	var participants = JSON.parse(response);
+		        	for(var i in participants){
+			        	var participant = participants[i];
+						var login = [
+							"<div class=\"room" + String(participant["roomId"]) +"\" memberId=\"" + String(participant["memberId"]) +"\">",
+							participant["memberName"],
+							"</div>",
+					    ].join("")
+						$("#login").append(login);
+						$("#login [class^=room]").hide();
+						$("#login .room9999").show();
+		        	}
+					return;
+
+		        },
+		        error: function(response){
+		            //通信失敗時の処理
+		            alert('通信失敗・現ログイン情報取得');
+		            return;
+		        }
+		    });
         },
         //切断時の処理
         function(reason) {
@@ -176,7 +205,7 @@ jQuery(function ($) {
 			return;
 	    }
 
-	    //購読通知
+	    //購読処理
 		subscribe(roomId);
 
 		//入室状態保存
@@ -186,8 +215,10 @@ jQuery(function ($) {
 	        data: {
     			roomId : parseInt(roomId),
 		         },
+		   	//通信成功時の処理
 	        success : function(response){
-	            //通信成功時の処理
+
+	        	//既出チャットの設定
 	            var chats = JSON.parse(response);
 	            for(var i in chats){
 	            	var msg = chats[i];
@@ -217,12 +248,11 @@ jQuery(function ($) {
 				    }
 				    $("#chats" + msg["roomId"]).prepend(chat);
 	            }
-	        	return;
 	        },
+	      	//通信失敗時の処理
 	        error: function(response){
-	            //通信失敗時の処理
-	            alert('通信失敗・入室状態保存');
-	            return;
+
+	            alert('[入室状態保存]通信失敗');
 	        }
 	    });
 
@@ -399,6 +429,7 @@ jQuery(function ($) {
 		unsubscribe(roomId);
 		$("#chats" + roomId).empty();
 		$(".menu .room" + roomId).closest('.menu').remove();
+		$("#login .room" + roomId + "[memberId=" + memberId + "]").remove();
 	});
 
 	//購読停止処理
@@ -432,89 +463,62 @@ jQuery(function ($) {
 
 	//送信ボタン処理
 	$("#send").click(send);
+
+	//送信処理
     function send() {
     	var msg = $("[name=chatText]").val();
 		var replyId = $("[name=replyId]").val();
 
         console.log("-- Publish --");
+        console.log("Topic: " + room);
+        console.log("Input: " + msg);
 
-            console.log("Topic: " + room);
-            console.log("Input: " + msg);
+        //送信処理
+    	$.ajax({
+    	    url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat'], true); ?>",
+    	    type: "POST",
+    	    data: { chatText : msg,
+    	    		roomId : room,
+    	    		replyId : replyId,
+    	         },
+    	    //通信成功時の処理
+    	    success : function(response){
 
-            //送信処理
-    	    $.ajax({
-    	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'addChat'], true); ?>",
-    	        type: "POST",
-    	        data: { chatText : msg,
-    	        		roomId : room,
-    	        		replyId : replyId,
-    		         },
-    		    //通信成功時の処理
-    	        success : function(response){
+    	    	//エラーメッセージ初期化
+    	    	$("#sendChat .error-message").remove();
 
-    	            //エラーメッセージ表示
-    	            $("#sendChat .error-message").remove();
-    	            var msg = JSON.parse(response);
-    	            if (msg.errors) {
-    	            	for(var key in msg["errors"]){
-    	            		for(var key2 in msg["errors"][key]){
-    		            		var error = [
-    		            	        "<div class=\"error-message\">",
-    		            	        msg["errors"][key][key2],
-    		            	        "</div>",
-    		            	    ].join("");
-    	            			$("[name=" + key + "]").after(error);
-    	            		}
-    	            	}
-    		            return;
-    	            }
+				//メッセージなし
+				if (response == "") {
+					//フォームリセット
+	        		$("[name=chatText]").val('');
+	        		$("[name=replyId]").val('');
+					return;
+				}
 
-    	    		//フォームリセット
-            		$("[name=chatText]").val('');
-            		$("[name=replyId]").val('');
-    	        },
-
-    	      	//通信失敗時の処理
-    	        error: function(response){
-
-    	            alert('通信失敗');
-    	            $("[name=chatText]").val(response);
+    	        //エラーメッセージ表示
+    	        var msg = JSON.parse(response);
+    	        if (msg.errors) {
+    	        	for(var key in msg["errors"]){
+    	        		for(var key2 in msg["errors"][key]){
+    	            		var error = [
+    	            	        "<div class=\"error-message\">",
+    	            	        msg["errors"][key][key2],
+    	            	        "</div>",
+    	            	    ].join("");
+    	        			$("[name=" + key + "]").after(error);
+    	        		}
+    	        	}
     	        }
-    	    });
-            //conn.publish(topic, JSON.stringify({input: input.val()}));
+    	    },
+    	  	//通信失敗時の処理
+    	    error: function(response){
+
+    	        alert('[チャット送信]通信失敗');
+    	    }
+    	});
     }
 
-	//現ログイン情報取得
-	$(document).ready(function(){
-	    $.ajax({
-	        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'getParticipants'], true); ?>",
-	        type: "POST",
-	        data: { roomId : room,
-		         },
-	        success : function(response){
-	            //通信成功時の処理
-	        	var participants = JSON.parse(response);
-	        	for(var i in participants){
-		        	var participant = participants[i];
-					var login = [
-						"<div class=\"room" + String(participant["roomId"]) +"\" memberId=\"" + String(participant["memberId"]) +"\">",
-						participant["memberName"],
-						"</div>",
-				    ].join("")
-					$("#login").append(login);
-					$("#login [class^=room]").hide();
-					$("#login .room9999").show();
-	        	}
-				return;
 
-	        },
-	        error: function(response){
-	            //通信失敗時の処理
-	            alert('通信失敗・現ログイン情報取得');
-	            return;
-	        }
-	    });
-	});
 
 	//ルーム作成
 	$("#create").click(function(){
@@ -527,30 +531,36 @@ jQuery(function ($) {
 	        data: { roomName : roomName,
 	        		roomDescription : roomDescription,
 		         },
+		    //通信成功時の処理
 	        success : function(response){
-	            //通信成功時の処理
-	            //エラーメッセージ表示
-	            $("#createRoom .error-message").remove();
-	            if (isNaN(response)) {
-	            	var msg = JSON.parse(response);
-	            	for(var key in msg["errors"]){
-	            		for(var key2 in msg["errors"][key]){
-		            		var error = [
-		            	        "<div class=\"error-message\">",
-		            	        msg["errors"][key][key2],
-		            	        "</div>",
-		            	    ].join("");
-	            			$("[name=" + key + "]").after(error);
-	            		}
-	            	}
-		            return;
-	            }
 
-	        	$("[name=roomDescription]").val('');
-	        	$("[name=roomName]").val('');
+	            //エラーメッセージ初期化
+    	    	$("#createRoom .error-message").remove();
+
+				//メッセージなし
+				if (response == "") {
+					//フォームリセット
+	        		$("[name=chatText]").val('');
+	        		$("[name=replyId]").val('');
+					return;
+				}
+
+	            //エラーメッセージ表示
+	            var msg = JSON.parse(response);
+	            for(var key in msg["errors"]){
+	            	for(var key2 in msg["errors"][key]){
+		            	var error = [
+		                    "<div class=\"error-message\">",
+		                    msg["errors"][key][key2],
+		                    "</div>",
+		                ].join("");
+	            		$("[name=" + key + "]").after(error);
+	            	}
+	            }
 	        },
+	      	//通信失敗時の処理
 	        error: function(response){
-	            //通信失敗時の処理
+
 	            alert('通信失敗');
 	            $("[name=chatText]").val(response);
 	        }

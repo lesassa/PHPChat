@@ -33,6 +33,17 @@ class SubscribesTable extends Table
         $this->setTable('subscribes');
         $this->setDisplayField('memberId');
         $this->setPrimaryKey(['memberId', 'roomId']);
+
+        $this->belongsTo('Rooms', [
+        		'className' => 'Rooms',
+        		'foreignKey' => 'roomId',
+        ]);
+
+        $this->belongsTo('Members', [
+        		'className' => 'Members',
+        		'foreignKey' => 'memberId',
+        		'bindingKey' => "memberId",
+        ]);
     }
 
     /**

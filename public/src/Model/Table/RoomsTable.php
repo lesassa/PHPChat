@@ -33,6 +33,11 @@ class RoomsTable extends Table
         $this->setTable('rooms');
         $this->setDisplayField('roomId');
         $this->setPrimaryKey('roomId');
+
+        $this->belongsTo('Subscribes', [
+        		'className' => 'Subscribes',
+        		'foreignKey' => 'roomId',
+        ]);
     }
 
     /**
