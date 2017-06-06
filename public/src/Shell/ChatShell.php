@@ -24,7 +24,7 @@ class ChatShell extends Shell
     	}
 
 
-    	echo $participant->memberId;
+    	echo "memberId:".$participant->memberId." time:".date("Y-M-d H:i").PHP_EOL;
     }
 
     public function login()

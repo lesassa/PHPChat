@@ -258,6 +258,7 @@ class ChatController extends AppController
     		$msg["roomDescription"] = $room->roomDescription;
     		$msg["roomCreate"] = true;
     		$this->sendByZMQ($msg);
+    		return;
     	}
 
     	echo json_encode(["errors" =>$room->errors()]);
@@ -332,7 +333,7 @@ class ChatController extends AppController
 			$msg[] = $subscribe->roomId;
 			$participants[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $subscribe->member->memberName];
 		}
-		$participants[] = ["roomId" => "9999", "memberId" => $this->loginTable->memberId, "memberName" => $subscribe->member->memberName];
+		$participants[] = ["roomId" => "9999", "memberId" => $this->loginTable->memberId, "memberName" => $this->loginTable->memberName];
 		$this->sendByZMQ($participants);
 
 		echo json_encode($msg);

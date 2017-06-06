@@ -8,9 +8,9 @@ class AIComponent  extends Component
 {
 
 
-
-	const FILE = "C:/Users/nowko/Dropbox/WorkSpace/CakePHP/doc/test.xlsx";
-
+	//ファイルパスは/で記載すること
+// 	const FILE = "C:/Users/nowko/Dropbox/WorkSpace/CakePHP/doc/test.xlsx";
+	const FILE = "//192.168.90.8/filesv/00_JENIUS保守開発/20.保守開発2/2-1G/10.オーソリ/xxx.個人別/岩浪/test.xlsx";
 
 	public $components = ['Log', 'Docomo'];
 

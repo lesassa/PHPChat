@@ -84,18 +84,22 @@ class Pusher implements WampServerInterface {
 		$msg= json_encode($msg);
 		$topic = $this->topics["9999"];
 		$topic->broadcast($msg);
-		echo "disconnection! ({$conn->resourceId})\n";
+		echo "disconnection! ({$conn->resourceId})\n".date("Y-M-d H:i");
 		echo $return;
 
 	}
 	public function onCall(ConnectionInterface $conn, $id, $fn, array $params) {
-		echo '********** '.__FUNCTION__.' begin **********'.PHP_EOL;
+		echo '********** '.__FUNCTION__.' begin **********'.date("Y-M-d H:i").PHP_EOL;
 		echo '$id : '.$id.PHP_EOL;
 		echo '$fn : '.$fn.PHP_EOL;
 		echo '$params : '.print_r($params, true).PHP_EOL;
 		echo '********** '.__FUNCTION__.' end *********'.PHP_EOL;
 		switch ($fn) {
-			//ログイン
+			//ピン
+			case 'ping':
+				return;
+				break;
+				//ログイン
 			case 'login':
 				$exec = dirname(dirname(dirname(__FILE__))).'\bin\cake chat login '.$conn->resourceId." ".$params[0];
 				$return = exec($exec);

@@ -25,7 +25,7 @@ jQuery(function ($) {
         function(e) {
         	console.log("Connected!");
     	    $("#status").append("接続済");
-    	    //ping();
+    	    ping();
 
 	        conn.call("login", [memberId]).then(function (result) {
 	           // do stuff with the result
@@ -98,7 +98,7 @@ jQuery(function ($) {
     		$("#status").text("切断。ページをリロードしてください。");
 
     		//エラーがタイムアウトの場合、ページのリロード
-    		if(e.code == "1006") {
+    		if(reason == ab.CONNECTION_LOST) {
     			conn.close();
     			window.location.href = "http://" + document.domain + ":8765"; // 通常の遷移
     		}
@@ -108,7 +108,13 @@ jQuery(function ($) {
 
 	//疎通確認
 	var ping = function(){
-	    conn.send("ping");
+	    conn.call("ping").then(function (result) {
+	           // do stuff with the result
+	           console.log(result);
+	        }, function(error) {
+	           // handle the error
+	           console.log(error);
+	        });
 	    setTimeout(ping, 150000);
 	}
 
@@ -557,8 +563,8 @@ jQuery(function ($) {
 				//メッセージなし
 				if (response == "") {
 					//フォームリセット
-	        		$("[name=chatText]").val('');
-	        		$("[name=replyId]").val('');
+	        		$("[name=roomName]").val('');
+	        		$("[name=roomDescription]").val('');
 					return;
 				}
 
