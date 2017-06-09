@@ -115,7 +115,7 @@ jQuery(function ($) {
 	           // handle the error
 	           console.log(error);
 	        });
-	    setTimeout(ping, 150000);
+	    setTimeout(ping, 120000);
 	}
 
 	//ルーム切り替え

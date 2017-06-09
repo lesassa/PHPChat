@@ -89,6 +89,10 @@ class Pusher implements WampServerInterface {
 
 	}
 	public function onCall(ConnectionInterface $conn, $id, $fn, array $params) {
+		if ($fn == 'ping') {
+			return;
+		}
+
 		echo '********** '.__FUNCTION__.' begin **********'.date("Y-M-d H:i").PHP_EOL;
 		echo '$id : '.$id.PHP_EOL;
 		echo '$fn : '.$fn.PHP_EOL;

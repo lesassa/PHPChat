@@ -18,13 +18,9 @@ class ChatShell extends Shell
     public function logout($resourceId)
     {
     	$ParticipantsDBI = TableRegistry::get('Participants');
-    	$participants = $ParticipantsDBI->find()->where(['resourceId =' => $resourceId]);
-    	foreach ($participants as $participant) {
-    		$ParticipantsDBI->delete($participant);
-    	}
+    	$participant = $ParticipantsDBI->find()->where(['resourceId =' => $resourceId])->first();
 
-
-    	echo "memberId:".$participant->memberId." time:".date("Y-M-d H:i").PHP_EOL;
+    	echo $participant->memberId;
     }
 
     public function login()
