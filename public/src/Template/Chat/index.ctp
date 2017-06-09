@@ -490,6 +490,8 @@ jQuery(function ($) {
 
     	var msg = $("[name=chatText]").val();
 		var replyId = $("[name=replyId]").val();
+		$("[name=chatText]").val('');
+		$("[name=replyId]").val('');
 
 
         console.log("-- Publish --");
