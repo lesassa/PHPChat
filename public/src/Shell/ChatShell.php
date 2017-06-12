@@ -19,6 +19,7 @@ class ChatShell extends Shell
     {
     	$ParticipantsDBI = TableRegistry::get('Participants');
     	$participant = $ParticipantsDBI->find()->where(['resourceId =' => $resourceId])->first();
+    	$ParticipantsDBI->delete($participant);
 
     	echo $participant->memberId;
     }

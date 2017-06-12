@@ -20,7 +20,7 @@ jQuery(function ($) {
 	}
 
 	//Websocket接続
-	var conn = new ab.Session('ws:' + document.domain + ':8080',
+	var conn = new ab.Session('ws:' + document.domain + ':8088',
 		//接続時の処理
         function(e) {
         	console.log("Connected!");
