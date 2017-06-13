@@ -9,6 +9,7 @@ footer {
 }
 
 
+
 /*全体の設定
 ---------------------------------------------------------------------------*/
 body {
@@ -363,4 +364,27 @@ table th{
 	width: 25%;
 }
 
+/*各種ボタン設定
+---------------------------------------------------------------------------*/
+svg{
+	width:1.5rem;
+	height:1.5rem;
+}
 
+
+/* .goodButton{ */
+/* 	fill:#AAB8C2; */
+/* } */
+
+/* .goodButton:hover{ */
+/* 	fill:#E81C4F; */
+/* 	cursor:pointer; */
+/* } */
+.replyButton{
+	fill:#AAB8C2;
+	cursor:pointer;
+}
+.replyButton:hover{
+	fill:#0099B9;
+	cursor:pointer;
+}

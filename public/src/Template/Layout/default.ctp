@@ -37,6 +37,9 @@
  			}
  		});
  	</script>
+ 	<?= $this->Html->script('jquery.balloon.min.js') ?>
+ 	<?= $this->Html->script('balloon.js') ?>
+
 </head>
 
 <body>
