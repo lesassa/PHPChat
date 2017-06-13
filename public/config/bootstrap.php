@@ -75,9 +75,25 @@ use Cake\Utility\Security;
 try {
     Configure::config('default', new PhpConfig());
     Configure::load('app', 'default', false);
+    //環境ごとの切り替え
+    switch (env('CAKEPHP_ENV')) {
+    	case 'development':
+    		Configure::load('appDeve', 'default', false);
+    		//個人設定
+    		Configure::load('constDeve', 'default');
+    		break;
+    	case 'redmine':
+    		Configure::load('app', 'default');
+    		//個人設定
+    		Configure::load('const', 'default');
+    		break;
+    	default:
+    		Configure::load('app', 'default');
+    		//個人設定
+    		Configure::load('const', 'default');
+    		break;
+    }
 
-    //個人設定
-    Configure::load('const', 'default');
 } catch (\Exception $e) {
     exit($e->getMessage() . "\n");
 }

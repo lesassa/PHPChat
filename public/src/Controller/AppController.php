@@ -90,9 +90,6 @@ class AppController extends Controller
         	$this->loginTable->memberId = GUEST_ID;
         }
         $this->set('loginTable', $this->loginTable);
-
-//         $loginTable->memberName = "";
-//         $this->set('loginTable', $loginTable);
     }
 
     /**

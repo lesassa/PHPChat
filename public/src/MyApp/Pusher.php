@@ -77,6 +77,7 @@ class Pusher implements WampServerInterface {
 			$this->onUnSubscribe($conn, $topic);
 		}
 
+		putenv('CAKEPHP_ENV='.env('CAKEPHP_ENV'));
 		$exec = dirname(dirname(dirname(__FILE__))).'\bin\cake chat logout '.$conn->resourceId;
 		$return = exec($exec);
 		$msg["logoutId"] = true;
@@ -84,8 +85,8 @@ class Pusher implements WampServerInterface {
 		$msg= json_encode($msg);
 		$topic = $this->topics["9999"];
 		$topic->broadcast($msg);
-		echo "disconnection! ({$conn->resourceId})\n".date("Y-M-d H:i");
-		echo $return;
+		echo "disconnection! ({$conn->resourceId})\n".date("Y-M-d H:i").PHP_EOL;
+		echo $return.PHP_EOL;
 
 	}
 	public function onCall(ConnectionInterface $conn, $id, $fn, array $params) {
@@ -105,6 +106,7 @@ class Pusher implements WampServerInterface {
 				break;
 				//ログイン
 			case 'login':
+				putenv('CAKEPHP_ENV='.env('CAKEPHP_ENV'));
 				$exec = dirname(dirname(dirname(__FILE__))).'\bin\cake chat login '.$conn->resourceId." ".$params[0];
 				$return = exec($exec);
 				return $conn->callResult($id, [$return]);
