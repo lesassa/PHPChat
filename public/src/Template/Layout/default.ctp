@@ -59,6 +59,7 @@
 			<?= $this->element('index') ?>
 			<p id="status"></p>
 			<?=$this->Form->input("通知設定", ["type" => "button", "id" => "supportbutton"]) ?><br/>
+			<?=$this->Html->link('アカウント編集', ['controller'=>'Reader', 'action'=>'edit', $loginTable->memberId]); ?><br/>
 			<?=$this->Html->link('ログアウト', ['controller'=>'Reader', 'action'=>'logout']); ?>
 		</nav>
 		<!-- /メニュー -->

@@ -95,6 +95,22 @@ class ReaderController extends AppController
 		$this->set('member', $member);
 	}
 
+	public function edit($memberId)
+	{
+		$this->viewBuilder()->layout('defaultLogin');
+		$MembersDBI = TableRegistry::get('Members');
+		$member = $MembersDBI->get($memberId, ["contain" => ["Login"]]);
+		if($this->request->is(['post'])) {
+			$member = $MembersDBI->patchEntity($member, $this->request->data);
+
+			if ($MembersDBI->save($member)) {
+
+				return $this->redirect(['controller'=>'Reader', 'action' => 'login']);
+			}
+		}
+		$this->set('member', $member);
+	}
+
 	public function bot()
 	{
 		$this->viewBuilder()->layout('defaultLogin');
