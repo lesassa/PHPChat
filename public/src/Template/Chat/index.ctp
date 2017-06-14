@@ -433,7 +433,7 @@ jQuery(function ($) {
 			"</p>",
 			"</div>",
 	    ].join("");
-		$("nav").prepend(roomBotton);
+		$("#room9999").after(roomBotton);
 
 	}
 
