@@ -33,4 +33,11 @@ class Chat extends Entity
     	'roomId' => true,
         'chatNumber' => false
     ];
+
+
+    protected function _getChatTime()
+    {
+    	return $this->_properties['createDate']->format('Y/m/d/ H:i:s');
+    }
+
 }

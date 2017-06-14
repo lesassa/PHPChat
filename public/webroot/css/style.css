@@ -364,7 +364,7 @@ table th{
 	width: 25%;
 }
 
-/*各種ボタン設定
+/*チャット設定
 ---------------------------------------------------------------------------*/
 svg{
 	width:1.5rem;
@@ -387,4 +387,8 @@ svg{
 .replyButton:hover{
 	fill:#0099B9;
 	cursor:pointer;
+}
+
+.chatTime {
+	float: right;
 }

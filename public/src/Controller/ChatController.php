@@ -94,19 +94,16 @@ class ChatController extends AppController
 
 	    if ($ChatsDBI->save($chat)) {
 
+	    	$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber]);
 		    $RoomsDBI = TableRegistry::get('Rooms');
 		    $room = $RoomsDBI->get($chat->roomId);
-
 		    $MembersDBI = TableRegistry::get('Members');
 		    $member = $MembersDBI->get($chat->memberId);
 
 		    //チャットサーバに送信
-		    $msg["roomId"] = $chat->roomId;
+		    $msg = $chat->toArray();
+		    $msg["chatTime"] = $chat->chatTime;
 		    $msg["roomName"] = $room->roomName;
-		    $msg["chatNumber"] = $chat->chatNumber;
-		    $msg["chatText"] = $chat->chatText;
-		    $msg["replyId"] = $chat->replyId;
-		    $msg["memberId"] = $chat->memberId;
 		    $msg["memberName"] = $member->memberName;
 		    $this->sendByZMQ($msg);
 
@@ -160,32 +157,6 @@ class ChatController extends AppController
 	    //エラーメッセージ返信
 	    echo json_encode(["errors" =>$chat->errors()]);
     }
-
-
-
-//     public function enter()
-//     {
-//     	//AJAX精査
-//     	$this->autoRender = FALSE;
-//     	if(!$this->request->is('ajax')) {
-//     		return;
-//     	}
-
-//     	$SubscribesDBI = TableRegistry::get('Subscribes');
-//     	$subscribes = $SubscribesDBI->find()->where(["memberId =" => $this->loginTable->memberId]);
-
-//     	$MembersDBI = TableRegistry::get('Members');
-//     	$member = $MembersDBI->get($participant->memberId);
-
-//     	$msg = ["login" => true,];
-//     	foreach ($subscribes as $subscribe) {
-// 	    	$msg[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $member->memberName];
-//     	}
-
-//     	//チャットサーバに送信
-//     	$this->sendByZMQ($msg);
-//     	echo 0;
-//     }
 
     /**
      * AJAXログイン情報取得
@@ -295,18 +266,17 @@ class ChatController extends AppController
     	$ChatsDBI = TableRegistry::get('Chats');
     	$query = $ChatsDBI->find();
     	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $subscribe->roomId])->first();
-    	$chats = $ChatsDBI->find()->where(["roomId =" => $subscribe->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'ASC']);
+    	$chats = $ChatsDBI->find()->where(["roomId =" => $subscribe->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'ASC'])->all();
     	$chatsArray = array();
     	foreach ($chats as $chat) {
     		$chatArray = array();
-    		$chatArray["roomId"] = $chat->roomId;
-    		$chatArray["replyId"] = $chat->replyId;
-    		$chatArray["chatNumber"] = $chat->chatNumber;
+    		$chatArray = $chat->toArray();
+    		$chatArray["chatTime"] = $chat->chatTime;
     		$chatArray["memberName"] = $chat->member->memberName;
-    		$chatArray["chatText"] = $chat->chatText;
     		$chatsArray[] = $chatArray;
     	}
-    	echo json_encode($chatsArray);
+
+    	$this->response->body(json_encode($chatsArray));
     }
 
     /**
@@ -353,7 +323,7 @@ class ChatController extends AppController
     	$subscribe = $SubscribesDBI->get([$this->loginTable->memberId, $this->request->data["roomId"]]);
     	$SubscribesDBI->delete($subscribe);
     	$msg = ["unsubscribeId" => true, "roomId" => $this->request->data["roomId"], "memberId" =>$this->loginTable->memberId];
-    	$this->sendByZMQ($participants);
+    	$this->sendByZMQ($msg);
     }
 
     /**
