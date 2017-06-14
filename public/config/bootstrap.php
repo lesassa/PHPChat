@@ -88,9 +88,9 @@ try {
     		Configure::load('const', 'default');
     		break;
     	default:
-    		Configure::load('app', 'default');
+    		Configure::load('appDeve', 'default', false);
     		//個人設定
-    		Configure::load('const', 'default');
+    		Configure::load('constCom', 'default');
     		break;
     }
 
