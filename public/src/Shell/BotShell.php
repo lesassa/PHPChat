@@ -24,6 +24,15 @@ class BotShell extends Shell
     	$this->saveChat($aiChat);
     }
 
+    public function talkRegularTime()
+    {
+    	//内容設定
+    	$aiChat= "定時だよ！まだ帰れないの？m9(^Д^)";
+
+    	//チャットを保存、送信
+    	$this->saveChat($aiChat);
+    }
+
     /**
      * ZMQでチャットサーバーに送信
      * @param array $msg 送信メッセージ（項目名と値の連想配列）
