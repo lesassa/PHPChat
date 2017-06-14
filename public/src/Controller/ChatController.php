@@ -60,10 +60,7 @@ class ChatController extends AppController
     			continue;
     		}
 
-	    	$ChatsDBI = TableRegistry::get('Chats');
-	    	$query = $ChatsDBI->find();
-	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $room->roomId])->first();
-	    	$chats = $ChatsDBI->find()->where(["roomId =" => $room->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'DESC']);;
+    		$chats = $this->getChat($room->roomId);
 	    	$room->chats = $chats;
 	    	$roomsWithChats[$room->roomId] = $room;
     	}
@@ -338,4 +335,45 @@ class ChatController extends AppController
     	$socket->connect("tcp://localhost:5555");
     	$socket->send(json_encode($msg));
     }
+
+
+
+    public function loadChat()
+    {
+    	//AJAX精査
+    	$this->autoRender = FALSE;
+    	if(!$this->request->is('ajax')) {
+    		return;
+    	}
+
+    	//チャット取得
+    	$chats = $this->getChat($this->request->data["roomId"], $this->request->data["chatNumber"]);
+    	$chatsArray = array();
+    	foreach ($chats as $chat) {
+    		$chatArray = array();
+    		$chatArray = $chat->toArray();
+    		$chatArray["chatTime"] = $chat->chatTime;
+    		$chatArray["memberName"] = $chat->member->memberName;
+    		$chatsArray[] = $chatArray;
+    	}
+
+    	$this->response->body(json_encode($chatsArray));
+    }
+
+    private function getChat($roomId, $chatNumber = null)
+    {
+    	//チャット取得
+    	$ChatsDBI = TableRegistry::get('Chats');
+    	$query = $ChatsDBI->find();
+    	if ($chatNumber == null) {
+	    	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $roomId])->first();
+	    	$offset = $ret->max_id;
+    	} else {
+    		$offset = $chatNumber - 1;
+    	}
+    	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >" => $offset - 10])->andWhere(["chatNumber <=" => $offset])->contain(['Members'])->order(['Chats.chatNumber' => 'DESC']);
+    	return $chats;
+    }
+
+
 }

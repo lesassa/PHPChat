@@ -405,32 +405,7 @@ jQuery(function ($) {
 	}
 
 	var memberId = <?=$loginTable->memberId ?>;
-// 	conn.onmessage = function(e) {
-// 	    console.log(e.data);
 
-// 	    //自分のリソースIDを受信した場合
-// 	    if (!isNaN(e.data)) {
-// 		    $.ajax({
-		        url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'enter'], true); ?>",
-// 		        type: "POST",
-// 		        data: { resourceId : e.data,
-// 	        			roomId : room,
-// 			         },
-// 		        success : function(response){
-// 		            //通信成功時の処理
-//		            var member = JSON.stringify({"memberId":"<?=$loginTable->memberId ?>", "memberName": "<?=$loginTable->memberName ?>", "resourceId": e.data});
-// 		          	conn.publish(room, member);
-// 		        	return;
-// 		        },
-// 		        error: function(response){
-// 		            //通信失敗時の処理
-// 		            alert('通信失敗・ログイン情報発信');
-// 		            return;
-// 		        }
-// 		    });
-// 		    return;
-// 	    }
-// 	};
 
 	$('.room9999').on('click', '.unsubscribe > button', function() {
 		var roomId = $(this).val();
@@ -594,6 +569,43 @@ jQuery(function ($) {
 		});
 	});
 
+
+	//過去のチャットをロード
+	$(window).on("scroll", function() {
+		if (room == "9999") {
+			return;
+		}
+		var scrollHeight = $(document).height();
+		var scrollPosition = $(window).height() + $(window).scrollTop();
+		if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
+			var chatNumber = $("#chats" + room + " [class^=chatNumber]:last").attr("class").slice("chatNumber".length);
+			if (chatNumber == "1") {
+				return;
+			}
+	    	$.ajax({
+	    	    url: "<?=$this->Url->build(['controller' =>'Chat','action' => 'loadChat'], true); ?>",
+	    	    type: "POST",
+	    	    data: { chatNumber : chatNumber,
+	    	    		roomId : room,
+	    	         },
+	    	    //通信成功時の処理
+	    	    success : function(response){
+
+		    	    //チャット配置
+		            var chats = JSON.parse(response);
+		            for(var i in chats){
+		            	var chat = createChat(chats[i]);
+		            	$("#chats" + room + " [class^=chatNumber]:last").after(chat);
+		            }
+	    	    },
+	    	  	//通信失敗時の処理
+	    	    error: function(response){
+
+	    	        alert('[過去チャットロード]通信失敗');
+	    	    }
+	    	});
+		}
+	});
 });
 
 
