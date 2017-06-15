@@ -64,16 +64,16 @@ class BotShell extends Shell
 
     	if ($ChatsDBI->save($chat)) {
 
+    		$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber]);
     		$MembersDBI = TableRegistry::get('Members');
     		$member = $MembersDBI->get(AI_ID);
 
     		//チャットサーバに送信
-    		$msg["roomId"] = BOT_ROOM;
-    		$msg["roomName"] = BOT_ROOMNAME;
-    		$msg["chatNumber"] = $chat->chatNumber;
-    		$msg["chatText"] = $chat->chatText;
-    		$msg["memberId"] = AI_ID;
+    		$msg = $chat->toArray();
+    		$msg["chatTime"] = $chat->chatTime;
+    		$msg["roomName"] = $room->roomName;
     		$msg["memberName"] = $member->memberName;
+    		$msg["roomName"] = BOT_ROOMNAME;
     		$this->sendByZMQ($msg);
     	}
     }
