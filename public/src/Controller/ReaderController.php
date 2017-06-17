@@ -6,7 +6,10 @@ use Cake\Auth\DefaultPasswordHasher;
 use Cake\ORM\TableRegistry;
 use Cake\Routing\Router;
 use Cake\Core\Configure;
-
+use Cake\Filesystem\Folder;
+use Cake\Filesystem\File;
+use RuntimeException;
+use App\Form\Reader\IconForm;
 
 /**
  * Reader Controller
@@ -109,6 +112,77 @@ class ReaderController extends AppController
 			}
 		}
 		$this->set('member', $member);
+	}
+
+	public function uploadIcon()
+	{
+		//AJAX精査
+		$this->autoRender = FALSE;
+		if(!$this->request->is('ajax')) {
+			return;
+		}
+
+		//精査
+		$iconForm = new IconForm();
+		if (!$iconForm->execute($this->request->data)) {
+
+			echo json_encode(["errors" => $iconForm->errors()]);
+			return;
+		}
+
+		//ログ出力
+		$this->Log->outputLog($this->request->data);
+
+		try {
+
+			$dir = realpath(WWW_ROOT . "/icon");
+			$file = $this->request->data['icon'];
+
+			// 未定義、複数ファイル、破損攻撃のいずれかの場合は無効処理
+			if (!isset($file['error']) || is_array($file['error'])){
+				throw new RuntimeException('Invalid parameters.');
+			}
+
+			// エラーのチェック
+			switch ($file['error']) {
+				case 0:
+					break;
+				case UPLOAD_ERR_OK:
+					break;
+				case UPLOAD_ERR_NO_FILE:
+					throw new RuntimeException('No file sent.');
+				case UPLOAD_ERR_INI_SIZE:
+				case UPLOAD_ERR_FORM_SIZE:
+					throw new RuntimeException('Exceeded filesize limit.');
+				default:
+					throw new RuntimeException('Unknown errors.');
+			}
+
+			// ファイルタイプのチェックし、拡張子を取得
+			if (false === $ext = array_search($file["type"], ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif',], true)){
+						throw new RuntimeException('Invalid file format.');
+			}
+			$deletFile = new File($dir . "/" . $this->loginTable->memberId.".".$ext);
+			$deletFile->delete();
+
+
+			if (!@move_uploaded_file($file["tmp_name"], $dir . "/" . $this->loginTable->memberId.".".$ext)){
+				throw new RuntimeException('Failed to move uploaded file.');
+			}
+
+			//画像名登録
+			$MembersDBI = TableRegistry::get('Members');
+			$member = $MembersDBI->get($this->loginTable->memberId);
+			$member->icon = $this->loginTable->memberId.".".$ext;
+			$MembersDBI->save($member);
+
+			//ログ出力
+			$this->Log->outputLog("Member = [".print_r($member, true)."]");
+		} catch (RuntimeException $e){
+
+			//ログ出力
+			$this->Log->outputLog("RuntimeException = [".print_r($e->getMessage(), true)."]");
+		}
 	}
 
 	public function bot()

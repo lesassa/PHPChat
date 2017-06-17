@@ -91,7 +91,7 @@ class ChatController extends AppController
 
 	    if ($ChatsDBI->save($chat)) {
 
-	    	$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber]);
+	    	$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ["Members"]]);
 		    $RoomsDBI = TableRegistry::get('Rooms');
 		    $room = $RoomsDBI->get($chat->roomId);
 		    $MembersDBI = TableRegistry::get('Members');
