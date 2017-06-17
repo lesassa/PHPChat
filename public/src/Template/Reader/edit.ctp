@@ -16,11 +16,16 @@ jQuery(function ($) {
     	    //通信成功時の処理
     	    success : function(response){
 
+    	    	var msg = JSON.parse(response);
+
     	    	//エラーメッセージ初期化
     	    	$(".error-message").remove();
 
 				//メッセージなし
-				if (response == "") {
+				if (msg["status"] == "success") {
+					var html = msg["html"];
+					$(".icon img").remove();
+					$(".icon").prepend(html[".icon"]);
 					//フォームリセット
 	        		$('input[name=icon]').val('');
 	            	var error = [
@@ -33,7 +38,6 @@ jQuery(function ($) {
 				}
 
 	            //エラーメッセージ表示
-	            var msg = JSON.parse(response);
 	            for(var key in msg["errors"]){
 	            	for(var key2 in msg["errors"][key]){
 		            	var error = [
@@ -41,7 +45,7 @@ jQuery(function ($) {
 		                    msg["errors"][key][key2],
 		                    "</div>",
 		                ].join("");
-	            		$("[name=" + key + "]").after(error);
+
 	            	}
 	            }
     	    },
@@ -76,11 +80,14 @@ jQuery(function ($) {
 <?=$this->Form->create(null,['type' => 'post']) ?>
 	<table>
 		<tr>
-			<th>アイコン</th>
+			<th>
+				アイコン
+				<div class="icon"><img src="/icon/<?=$member->icon ?>" alt="<?=$member->memberName ?>" /></div>
+			</th>
 			<td><?=$this->Form->input("icon", ["type" => "file",]) ?></td>
 		</tr>
 	<tr><td colspan="2"><?=$this->Form->input("upload", ["type" => "button",]) ?></td></tr>
 	</table>
 <?=$this->Form->end() ?>
 
-<?=$this->Html->link('戻る', ['controller'=>'Reader', 'action'=>'login']); ?>
+<?=$this->Html->link('戻る', ['controller'=>'Chat', 'action'=>'index']); ?>

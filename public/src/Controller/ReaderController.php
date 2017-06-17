@@ -10,6 +10,7 @@ use Cake\Filesystem\Folder;
 use Cake\Filesystem\File;
 use RuntimeException;
 use App\Form\Reader\IconForm;
+use Cake\View\View;
 
 /**
  * Reader Controller
@@ -118,6 +119,7 @@ class ReaderController extends AppController
 	{
 		//AJAX精査
 		$this->autoRender = FALSE;
+		$this->response->type('json');
 		if(!$this->request->is('ajax')) {
 			return;
 		}
@@ -162,22 +164,30 @@ class ReaderController extends AppController
 			if (false === $ext = array_search($file["type"], ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif',], true)){
 						throw new RuntimeException('Invalid file format.');
 			}
-			$deletFile = new File($dir . "/" . $this->loginTable->memberId.".".$ext);
-			$deletFile->delete();
+// 			$deletFile = new File($dir . "/" . $this->loginTable->memberId.".".$ext);
+// 			$deletFile->delete();
 
-
-			if (!@move_uploaded_file($file["tmp_name"], $dir . "/" . $this->loginTable->memberId.".".$ext)){
+			$imgName = date("YmdHis");
+			if (!@move_uploaded_file($file["tmp_name"], $dir . "/" . $imgName.".".$ext)){
 				throw new RuntimeException('Failed to move uploaded file.');
 			}
 
 			//画像名登録
 			$MembersDBI = TableRegistry::get('Members');
 			$member = $MembersDBI->get($this->loginTable->memberId);
-			$member->icon = $this->loginTable->memberId.".".$ext;
+			$member->icon = $imgName.".".$ext;
 			$MembersDBI->save($member);
 
 			//ログ出力
 			$this->Log->outputLog("Member = [".print_r($member, true)."]");
+
+
+			$View = new View(); // Viewを生成。Controllerの状態が引き継がれる
+			$View->set("member", $member); // $View->viewPath = 'Viewのフォルダ名';
+			$response["status"] = "success";
+			$response["html"][".icon"] = $View->render('/Element/icon', false);
+			echo json_encode($response);
+
 		} catch (RuntimeException $e){
 
 			//ログ出力
