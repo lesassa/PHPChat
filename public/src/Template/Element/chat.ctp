@@ -1,6 +1,6 @@
 <hr>
 <div class="chatNumber<?=$chat->chatNumber ?>">
-	<div class="icon"><img src="/icon/<?=$chat->member->icon ?>" alt="<?=$chat->member->memberName ?>" /></div>
+	<?= $this->element('iconWrapper', ['member'=> $chat->member]) ?>
 
 	<div class="chat">
 		<?php if ($chat->replyId != ""): ?>

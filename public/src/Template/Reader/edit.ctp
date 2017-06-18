@@ -38,15 +38,10 @@ jQuery(function ($) {
 				}
 
 	            //エラーメッセージ表示
-	            for(var key in msg["errors"]){
-	            	for(var key2 in msg["errors"][key]){
-		            	var error = [
-		                    "<div class=\"error-message\">",
-		                    msg["errors"][key][key2],
-		                    "</div>",
-		                ].join("");
-
-	            	}
+	            if (msg["status"] == "error") {
+		            for(var key in msg["html"]){
+		            	$(key).after(msg["html"][key]);
+		            }
 	            }
     	    },
     	  	//通信失敗時の処理
@@ -82,7 +77,7 @@ jQuery(function ($) {
 		<tr>
 			<th>
 				アイコン
-				<div class="icon"><img src="/icon/<?=$member->icon ?>" alt="<?=$member->memberName ?>" /></div>
+				<?= $this->element('iconWrapper', ['member'=> $member]) ?>
 			</th>
 			<td><?=$this->Form->input("icon", ["type" => "file",]) ?></td>
 		</tr>

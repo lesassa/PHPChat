@@ -127,8 +127,13 @@ class ReaderController extends AppController
 		//精査
 		$iconForm = new IconForm();
 		if (!$iconForm->execute($this->request->data)) {
-
-			echo json_encode(["errors" => $iconForm->errors()]);
+			$response["status"] = "error";
+			foreach($iconForm->errors() as $key => $errorMessages) {
+				$View = new View(); // Viewを生成。Controllerの状態が引き継がれる
+				$View->set("errorMessages", $errorMessages); // $View->viewPath = 'Viewのフォルダ名';
+				$response["html"]["[name=".$key."]"] = $View->render('/Element/error', false);
+			}
+			echo json_encode($response);
 			return;
 		}
 
@@ -164,8 +169,6 @@ class ReaderController extends AppController
 			if (false === $ext = array_search($file["type"], ['jpg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif',], true)){
 						throw new RuntimeException('Invalid file format.');
 			}
-// 			$deletFile = new File($dir . "/" . $this->loginTable->memberId.".".$ext);
-// 			$deletFile->delete();
 
 			$imgName = date("YmdHis");
 			if (!@move_uploaded_file($file["tmp_name"], $dir . "/" . $imgName.".".$ext)){
