@@ -19,6 +19,8 @@ use Cake\Network\Exception\ForbiddenException;
 use Cake\Network\Exception\NotFoundException;
 use Cake\View\Exception\MissingTemplateException;
 use Cake\ORM\TableRegistry;
+use Cake\View\View;
+use App\View\AjaxView;
 
 /**
  * Static content controller
@@ -91,18 +93,15 @@ class ChatController extends AppController
 
 	    if ($ChatsDBI->save($chat)) {
 
-	    	$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ["Members"]]);
-		    $RoomsDBI = TableRegistry::get('Rooms');
-		    $room = $RoomsDBI->get($chat->roomId);
-		    $MembersDBI = TableRegistry::get('Members');
-		    $member = $MembersDBI->get($chat->memberId);
-
-		    //チャットサーバに送信
-		    $msg = $chat->toArray();
-		    $msg["chatTime"] = $chat->chatTime;
-		    $msg["roomName"] = $room->roomName;
-		    $msg["memberName"] = $member->memberName;
-		    $this->sendByZMQ($msg);
+	    	$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ["Members", "Rooms"]]);
+	    	$View = new AjaxView();
+		    $View->set("chat", $chat);
+		    $response["status"] = "success";
+		    $response["html"] = $View->render('/Element/chat', false);
+		    $response["selecter"] = "#chats".$chat->roomId;
+		    $response["roomName"] = $chat->room->roomName;
+		    $response["roomId"] = $chat->room->roomId;
+		    $this->sendByZMQ($response);
 
 		    //AIへの返信の場合
 		    //AI判定
@@ -139,12 +138,16 @@ class ChatController extends AppController
 		    	$this->Log->outputLog("AI reply = [".print_r($replyChat, true)."]");
 
 		    	//チャットサーバに送信
-		    	$replyChat= $ChatsDBI->get([$replyChat->roomId, $replyChat->chatNumber], ["contain" => ["Members"]]);
-		    	$replyMsg= $replyChat->toArray();
-		    	$replyMsg["chatTime"] = $replyChat->chatTime;
-		    	$replyMsg["roomName"] = $room->roomName;
-		    	$replyMsg["memberName"] = $replyChat->member->memberName;
-		    	$this->sendByZMQ($replyMsg);
+		    	$replyChat= $ChatsDBI->get([$replyChat->roomId, $replyChat->chatNumber], ["contain" => ["Members",  "Rooms"]]);
+		    	$View = new AjaxView();
+		    	$View->set("chat", $replyChat);
+		    	$response["status"] = "success";
+		    	$response["html"] = $View->render('/Element/chat', false);
+		    	$response["selecter"] = "#chats".$replyChat->roomId;
+		    	$response["roomName"] = $replyChat->room->roomName;
+		    	$response["roomId"] = $chat->room->roomId;
+		    	$response["memberName"] = $replyChat->member->memberName;
+		    	$this->sendByZMQ($response);
 		    	return;
 		    }
 	    }
@@ -263,15 +266,18 @@ class ChatController extends AppController
     	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $subscribe->roomId])->first();
     	$chats = $ChatsDBI->find()->where(["roomId =" => $subscribe->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'ASC'])->all();
     	$chatsArray = array();
-    	foreach ($chats as $chat) {
-    		$chatArray = array();
-    		$chatArray = $chat->toArray();
-    		$chatArray["chatTime"] = $chat->chatTime;
-    		$chatArray["memberName"] = $chat->member->memberName;
-    		$chatsArray[] = $chatArray;
-    	}
 
-    	$this->response->body(json_encode($chatsArray));
+    	//チャットサーバに送信
+    	$response["status"] = "success";
+    	$response["selecter"] = "#chats".$subscribe->roomId;
+    	$response["memberName"] = $member->memberName;
+    	$response["html"] = "";
+    	foreach ($chats as $chat) {
+    		$View = new AjaxView();
+    		$View->set("chat", $chat);
+    		$response["html"] = $View->render('/Element/chat', false).$response["html"];
+    	}
+    	$this->response->body(json_encode($response));
     }
 
     /**
@@ -346,16 +352,15 @@ class ChatController extends AppController
 
     	//チャット取得
     	$chats = $this->getChat($this->request->data["roomId"], $this->request->data["chatNumber"]);
-    	$chatsArray = array();
+    	$response["status"] = "success";
+    	$response["selecter"] = "#chats".$this->request->data["roomId"];
+    	$response["html"] = "";
     	foreach ($chats as $chat) {
-    		$chatArray = array();
-    		$chatArray = $chat->toArray();
-    		$chatArray["chatTime"] = $chat->chatTime;
-    		$chatArray["memberName"] = $chat->member->memberName;
-    		$chatsArray[] = $chatArray;
+    		$View = new AjaxView();
+    		$View->set("chat", $chat);
+    		$response["html"] = $response["html"].$View->render('/Element/chat', false);
     	}
-
-    	$this->response->body(json_encode($chatsArray));
+    	$this->response->body(json_encode($response));
     }
 
     private function getChat($roomId, $chatNumber = null)

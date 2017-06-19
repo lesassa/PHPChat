@@ -38,6 +38,12 @@ class ChatsTable extends Table
 			'className' => 'Members',
 			'foreignKey' => 'memberId',
 		]);
+
+		$this->belongsTo('Rooms', [
+				'className' => 'Rooms',
+				'foreignKey' => 'roomId',
+				'bindingKey' => "roomId",
+		]);
     }
 
     /**

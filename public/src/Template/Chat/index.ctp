@@ -225,12 +225,10 @@ jQuery(function ($) {
 	        success : function(response){
 
 	        	//既出チャットの設定
-	            var chats = JSON.parse(response);
-	            for(var i in chats){
-	            	var msg = chats[i];
-	            	var chat = createChat(chats[i]);
-				    $("#chats" + msg["roomId"]).prepend(chat);
-	            }
+	            var msg = JSON.parse(response);
+			    var html = msg["html"];
+			    var selecter = msg["selecter"];
+			    $(selecter).prepend(html);
 
 	            //ルーム切替
 				$("[name=chatText]").val('');
@@ -327,8 +325,11 @@ jQuery(function ($) {
 
 
 		    //通常メッセージを受信した場合
-			var chat = createChat(msg);
-		    $("#chats" + msg["roomId"]).prepend(chat);
+		    var html = msg["html"];
+		    var selecter = msg["selecter"];
+		    $(selecter).prepend(html);
+// 			var chat = createChat(msg);
+// 		    $("#chats" + msg["roomId"]).prepend(chat);
 
 		    //他の人からはデスクトップに通知する
 		    if (memberId != msg["memberId"]) {
@@ -595,11 +596,10 @@ jQuery(function ($) {
 	    	    success : function(response){
 
 		    	    //チャット配置
-		            var chats = JSON.parse(response);
-		            for(var i in chats){
-		            	var chat = createChat(chats[i]);
-		            	$("#chats" + room + " [class^=chatNumber]:last").after(chat);
-		            }
+		            var msg = JSON.parse(response);
+				    var html = msg["html"];
+				    var selecter = msg["selecter"];
+				    $(selecter).append(html);
 	    	    },
 	    	  	//通信失敗時の処理
 	    	    error: function(response){
