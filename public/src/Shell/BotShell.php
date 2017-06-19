@@ -73,6 +73,7 @@ class BotShell extends Shell
     		$msg["chatTime"] = $chat->chatTime;
     		$msg["roomName"] = $room->roomName;
     		$msg["memberName"] = $member->memberName;
+    		$msg["member"] = $member;
     		$msg["roomName"] = BOT_ROOMNAME;
     		$this->sendByZMQ($msg);
     	}

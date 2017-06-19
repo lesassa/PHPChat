@@ -143,7 +143,7 @@ class ChatController extends AppController
 		    	$replyMsg= $replyChat->toArray();
 		    	$replyMsg["chatTime"] = $replyChat->chatTime;
 		    	$replyMsg["roomName"] = $room->roomName;
-		    	$replyMsg["memberName"] = $replyChat->member->memberName;;
+		    	$replyMsg["memberName"] = $replyChat->member->memberName;
 		    	$this->sendByZMQ($replyMsg);
 		    	return;
 		    }
