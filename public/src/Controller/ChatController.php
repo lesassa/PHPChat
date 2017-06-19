@@ -139,13 +139,11 @@ class ChatController extends AppController
 		    	$this->Log->outputLog("AI reply = [".print_r($replyChat, true)."]");
 
 		    	//チャットサーバに送信
-		    	$replyMsg["roomId"] = $replyChat->roomId;
+		    	$replyChat= $ChatsDBI->get([$replyChat->roomId, $replyChat->chatNumber], ["contain" => ["Members"]]);
+		    	$replyMsg= $replyChat->toArray();
+		    	$replyMsg["chatTime"] = $replyChat->chatTime;
 		    	$replyMsg["roomName"] = $room->roomName;
-		    	$replyMsg["chatNumber"] = $replyChat->chatNumber;
-		    	$replyMsg["chatText"] = $replyChat->chatText;
-		    	$replyMsg["replyId"] = $replyChat->replyId;
-		    	$replyMsg["memberId"] = $replyChat->memberId;
-		    	$replyMsg["memberName"] = $originalChat->member->memberName;
+		    	$replyMsg["memberName"] = $replyChat->member->memberName;;
 		    	$this->sendByZMQ($replyMsg);
 		    	return;
 		    }
