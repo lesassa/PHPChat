@@ -14,9 +14,9 @@ jQuery(function ($) {
 	});
 
 	//デスクトップ通知
-	function show(title, msg)
+	function show(title, msg, icon)
 	{
-		notify.createNotification( title, { body: msg, icon: '<?=$this->Url->image('cake.icon.png');?>' } )
+		notify.createNotification( title, { body: msg, icon: '/icon/' + icon } )
 	}
 
 	//Websocket接続
@@ -328,14 +328,13 @@ jQuery(function ($) {
 		    var html = msg["html"];
 		    var selecter = msg["selecter"];
 		    $(selecter).prepend(html);
-// 			var chat = createChat(msg);
-// 		    $("#chats" + msg["roomId"]).prepend(chat);
 
 		    //他の人からはデスクトップに通知する
-		    if (memberId != msg["memberId"]) {
-			  	show(msg["roomName"], msg["chatText"]);
-			  	if (parseInt(msg["roomId"]) != room) {
-				  	upUnread(msg["roomId"]);
+		    var chat = msg["chat"];
+		    if (memberId != chat["memberId"]) {
+			  	show(chat["room"]["roomName"], chat["chatText"], chat["member"]["icon"]);
+			  	if (parseInt(chat["roomId"]) != room) {
+				  	upUnread(chat["roomId"]);
 				  	titlenotifier.add();
 			  	} else {
 			  		if (!document.hasFocus()) {

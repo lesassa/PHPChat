@@ -99,8 +99,9 @@ class ChatController extends AppController
 		    $response["status"] = "success";
 		    $response["html"] = $View->render('/Element/chat', false);
 		    $response["selecter"] = "#chats".$chat->roomId;
-		    $response["roomName"] = $chat->room->roomName;
+// 		    $response["roomName"] = $chat->room->roomName;
 		    $response["roomId"] = $chat->room->roomId;
+		    $response["chat"] = $chat->toArray();
 		    $this->sendByZMQ($response);
 
 		    //AIへの返信の場合
@@ -144,9 +145,10 @@ class ChatController extends AppController
 		    	$response["status"] = "success";
 		    	$response["html"] = $View->render('/Element/chat', false);
 		    	$response["selecter"] = "#chats".$replyChat->roomId;
-		    	$response["roomName"] = $replyChat->room->roomName;
+// 		    	$response["roomName"] = $replyChat->room->roomName;
 		    	$response["roomId"] = $chat->room->roomId;
-		    	$response["memberName"] = $replyChat->member->memberName;
+// 		    	$response["memberName"] = $replyChat->member->memberName;
+		    	$response["chat"] = $replyChat->toArray();
 		    	$this->sendByZMQ($response);
 		    	return;
 		    }

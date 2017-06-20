@@ -200,10 +200,10 @@ class Pusher implements WampServerInterface {
 
 		foreach ($this->topics as $topic)
 		{
-			if ($json->roomId == $topic->getId())
+			if ($json->chat->roomId == $topic->getId())
 			{
 				// 配信
-				echo "({$json->chatText})\n";
+				echo "({$json->chat->chatText})\n";
 				$topic->broadcast($msg);
 				break;
 			}

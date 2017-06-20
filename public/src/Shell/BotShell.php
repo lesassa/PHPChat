@@ -6,6 +6,7 @@ use Cake\Console\Shell;
 use Cake\Log\Log;
 use Psy\Shell as PsyShell;
 use Cake\ORM\TableRegistry;
+use App\View\AjaxView;
 
 class BotShell extends Shell
 {
@@ -64,18 +65,22 @@ class BotShell extends Shell
 
     	if ($ChatsDBI->save($chat)) {
 
-    		$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber]);
+    		$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ["Members",  "Rooms"]]);
     		$MembersDBI = TableRegistry::get('Members');
     		$member = $MembersDBI->get(AI_ID);
 
     		//チャットサーバに送信
-    		$msg = $chat->toArray();
-    		$msg["chatTime"] = $chat->chatTime;
-    		$msg["roomName"] = $room->roomName;
-    		$msg["memberName"] = $member->memberName;
-    		$msg["member"] = $member;
-    		$msg["roomName"] = BOT_ROOMNAME;
-    		$this->sendByZMQ($msg);
+    		$View = new AjaxView();
+    		$View->set("chat", $chat);
+    		$response["status"] = "success";
+    		$response["html"] = $View->render('/Element/chat', false);
+    		$response["selecter"] = "#chats".$chat->roomId;
+//     		$response["roomName"] = $chat->room->roomName;
+    		$response["roomId"] = $chat->room->roomId;
+//     		$response["memberName"] = $member->memberName;
+    		$response["chat"] = $chat->toArray();
+    		$this->sendByZMQ($response);
+
     	}
     }
 
