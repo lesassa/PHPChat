@@ -99,7 +99,6 @@ class ChatController extends AppController
 		    $response["status"] = "success";
 		    $response["html"] = $View->render('/Element/chat', false);
 		    $response["selecter"] = "#chats".$chat->roomId;
-// 		    $response["roomName"] = $chat->room->roomName;
 		    $response["roomId"] = $chat->room->roomId;
 		    $response["chat"] = $chat->toArray();
 		    $this->sendByZMQ($response);
@@ -145,9 +144,7 @@ class ChatController extends AppController
 		    	$response["status"] = "success";
 		    	$response["html"] = $View->render('/Element/chat', false);
 		    	$response["selecter"] = "#chats".$replyChat->roomId;
-// 		    	$response["roomName"] = $replyChat->room->roomName;
 		    	$response["roomId"] = $chat->room->roomId;
-// 		    	$response["memberName"] = $replyChat->member->memberName;
 		    	$response["chat"] = $replyChat->toArray();
 		    	$this->sendByZMQ($response);
 		    	return;
@@ -172,7 +169,8 @@ class ChatController extends AppController
     	sleep(1);//前回ログアウトを待つ
     	$ParticipantsDBI = TableRegistry::get('Participants');
     	$participants = $ParticipantsDBI->find()->contain(['Members', "Subscribes"])->all();
-    	$members = array();
+    	$response["status"] = "loginId";
+    	$response["html"][] = array();
     	foreach ($participants as $participant) {
 
     		//ログ出力
@@ -184,23 +182,24 @@ class ChatController extends AppController
     		}
 
     		//ログイン情報に紐づく購読ルームを取得
-    		foreach ($participant->subscribes as $subscribe) {
-	    		$member = array();
-	    		$member["memberId"] = $subscribe->memberId;
-	    		$member["roomId"] = $subscribe->roomId;
-	    		$member["memberName"] = $participant->member->memberName;
-	    		$members[] = $member;
-    		}
 
-    		//ログイン情報と表紙を紐づけ
-    		$member = array();
-    		$member["memberId"] = $participant->memberId;
-    		$member["roomId"] = "9999";
-    		$member["memberName"] = $participant->member->memberName;
-    		$members[] = $member;
+    		foreach($participant->subscribes as $subscribe) {
+    			$View = new AjaxView();
+    			$View->set("subscribe", $subscribe);
+    			$View->set("memberName", $subscribe->member->memberName);
+    			$response["html"][] = $View->render('/Element/login', false);
+    		}
+    		$View = new AjaxView();
+    		$SubscribesDBI = TableRegistry::get('Subscribes');
+    		$subscribe = $SubscribesDBI->newEntity();
+    		$subscribe->memberId = $participant->memberId;
+    		$subscribe->roomId= "9999";
+    		$View->set("subscribe", $subscribe);
+    		$View->set("memberName", $participant->member->memberName);
+    		$response["html"][] = $View->render('/Element/login', false);
 		}
 
-		$this->response->body(json_encode($members));
+		$this->response->body(json_encode($response));
     }
 
 
@@ -224,11 +223,19 @@ class ChatController extends AppController
     		$this->Log->outputLog("room = [".print_r($room, true)."]");
 
     		//チャットサーバに送信
-    		$msg["roomId"] = $room->roomId;
-    		$msg["roomName"] = $room->roomName;
-    		$msg["roomDescription"] = $room->roomDescription;
-    		$msg["roomCreate"] = true;
-    		$this->sendByZMQ($msg);
+    		$room->chats = array();
+    		$response["status"] = "roomCreate";
+    		$View = new AjaxView();
+    		$View->set("room", $room);
+    		$response["html"]["#main form"] = $View->render('/Element/roomName', false);
+    		$View = new AjaxView();
+    		$View->set("room", $room);
+    		$response["html"][".inner"] = $View->render('/Element/room', false);
+    		$View = new AjaxView();
+    		$View->set("room", $room);
+    		$response["html"]["#main .room9999"] = $View->render('/Element/roomList', false);
+    		$this->sendByZMQ($response);
+
     		return;
     	}
 
@@ -236,7 +243,7 @@ class ChatController extends AppController
     }
 
     /**
-     * AJAX購読ルームのい保存
+     * AJAX購読ルームの保存
      */
     public function saveSubscribe()
     {
@@ -258,9 +265,12 @@ class ChatController extends AppController
     	//チャットサーバに送信
     	$MembersDBI = TableRegistry::get('Members');
     	$member = $MembersDBI->get($subscribe->memberId);
-    	$msg = ["loginId" => true,];
-    	$msg[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $member->memberName];
-    	$this->sendByZMQ($msg);
+    	$response["status"] = "loginId";
+    	$View = new AjaxView();
+    	$View->set("subscribe", $subscribe);
+    	$View->set("memberName", $member->memberName);
+    	$response["html"][] = $View->render('/Element/login', false);
+    	$this->sendByZMQ($response);
 
     	//既出のチャットの取得
     	$ChatsDBI = TableRegistry::get('Chats');
@@ -300,15 +310,24 @@ class ChatController extends AppController
 
     	//入室情報送信
     	//チャットサーバに送信
-    	$participants = ["loginId" => true,];
+    	$response["status"] = "loginId";
     	$msg = array();
-		foreach($subscribes as $subscribe) {
-			$msg[] = $subscribe->roomId;
-			$participants[] = ["roomId" => $subscribe->roomId, "memberId" => $subscribe->memberId, "memberName" => $subscribe->member->memberName];
-		}
-		$participants[] = ["roomId" => "9999", "memberId" => $this->loginTable->memberId, "memberName" => $this->loginTable->memberName];
-		$this->sendByZMQ($participants);
-
+    	foreach($subscribes as $subscribe) {
+    		$msg[] = $subscribe->roomId;
+	    	$View = new AjaxView();
+	    	$View->set("subscribe", $subscribe);
+	    	$View->set("memberName", $subscribe->member->memberName);
+	    	$response["html"][] = $View->render('/Element/login', false);
+    	}
+    	$View = new AjaxView();
+    	$SubscribesDBI = TableRegistry::get('Subscribes');
+    	$subscribe = $SubscribesDBI->newEntity();
+    	$subscribe->memberId = $this->loginTable->memberId;
+    	$subscribe->roomId= "9999";
+    	$View->set("subscribe", $subscribe);
+    	$View->set("memberName", $this->loginTable->memberName);
+    	$response["html"][] = $View->render('/Element/login', false);
+    	$this->sendByZMQ($response);
 		echo json_encode($msg);
     }
 

@@ -68,21 +68,17 @@ jQuery(function ($) {
 		        data: { roomId : room,
 			         },
 		        success : function(response){
-		            //通信成功時の処理
-		        	var participants = JSON.parse(response);
-		        	for(var i in participants){
-			        	var participant = participants[i];
-						var login = [
-							"<div class=\"room" + String(participant["roomId"]) +"\" memberId=\"" + String(participant["memberId"]) +"\">",
-							participant["memberName"],
-							"</div>",
-					    ].join("")
-						$("#login").append(login);
-						$("#login [class^=room]").hide();
-						$("#login .room9999").show();
-		        	}
-					return;
 
+		            //通信成功時の処理
+		        	var msg = JSON.parse(response);
+					var html = msg["html"];
+					for(var i in html){
+						var login = html[i];
+						$("#login").append(login);
+					}
+					$("#login [class^=room]").hide();
+					$("#login .room" + room).show();
+					return;
 		        },
 		        error: function(response){
 		            //通信失敗時の処理
@@ -140,14 +136,6 @@ jQuery(function ($) {
 		} else {
 			$("#main #sendChat").show();
 		}
-
-// 		conn.call("login").then(function (result) {
-// 	           // do stuff with the result
-// 	           console.log(result);
-// 	        }, function(error) {
-// 	           // handle the error
-// 	           console.log(error);
-// 	     });
 	});
 
 	//初期表示ルーム切り替え
@@ -259,55 +247,24 @@ jQuery(function ($) {
 		    var msg = JSON.parse(event);
 
 			//ルームの作成時
-			if (msg.roomCreate) {
-				var roomName = [
-		        	"<div class=\"room" + String(msg["roomId"]) + "\"><h2>",
-		        	String(msg["roomName"]),
-					"</h2></div>",
-			    ].join("");
-		    	$("#main form").before(roomName);
-
-				var roomCreate = [
-		        	"<div class=\"room" + String(msg["roomId"]) + "\">",
-					"<div id=\"chats" + String(msg["roomId"]) + "\">",
-					"</div>",
-					"</div>",
-			    ].join("");
-	        	$(".inner").append(roomCreate);
-
-				var roomList = [
-					"<table>",
-					"<tr><th>ルームネーム</th>",
-					"<td>" + String(msg["roomName"]) + "</td></tr>",
-		        	"<tr><th>ルーム説明</th>",
-					"<td>" + String(msg["roomDescription"]) + "</td></tr>",
-					"<tr><td class=\"subscribe\"><button type=\"button\" value=\"" + String(msg["roomId"]) + "\" id=\"ru-shi\">入室</button>",
-					"<input type=\"hidden\" name=\"roomName" + String(msg["roomId"]) + "\" id=\"roomName" + String(msg["roomId"]) + "\" value=\"" + String(msg["roomName"]) + "\"/></td>",
-					"<td class=\"unsubscribe\"><button type=\"button\" value=\"" + String(msg["roomId"]) + "\" id=\"tui-shi\">退室</button></td>",
-					"</tr></table>"
-			    ].join("");
-				$("#main .room9999").append(roomList);
+			if (msg["status"] == "roomCreate") {
+		    	$("#main form").before(msg["html"]["#main form"]);
+	        	$(".inner").append(msg["html"][".inner"]);
+				$("#main .room9999").append(msg["html"]["#main .room9999"]);
 				$("#main [class^=room]").hide();
 				$("#main .room" + room).show();
 				return;
 			}
 
 		  	//ログイン情報を受信した場合
-			if (msg.loginId) {
-				for(var i in msg){
-					if (i == "loginId") {
-						return;
-					}
-					var participant = msg[i];
-					var login = [
-						"<div class=\"room" + String(participant["roomId"]) +"\" memberId=\"" + String(participant["memberId"]) +"\">",
-						String(participant["memberName"]),
-						"</div>",
-				    ].join("");
-				$("#login").append(login);
+			if (msg["status"] == "loginId") {
+				var html = msg["html"];
+				for(var i in html){
+					var login = html[i];
+					$("#login").append(login);
+				}
 				$("#login [class^=room]").hide();
 				$("#login .room" + room).show();
-				}
 				return;
 			}
 
@@ -344,43 +301,6 @@ jQuery(function ($) {
 			  	}
 		    }
 	}
-
-	//チャット成型
-	function createChat(msg) {
-		var chatHeader = [
-			"<hr>",
-			"<div class=\"chatNumber" + String(msg["chatNumber"]) + "\">",
-			"<div class=\"icon\"><img src=\"/icon/" + String(msg["member"]["icon"]) + "\" alt=\"" + String(msg["member"]["memberName"]) + "\" /></div>",
-			"<div class=\"chat\">",
-		].join("").replace(/\n/g, "<br />");
-
-    	var chat = [
-	        String(msg["chatNumber"]) + ":",
-	        String(msg["memberName"]),
-	        "<br/> " + msg["chatText"],
-	        "<br/>",
-	        "<svg class=\"goodButton\" xmlns=\"http://www.w3.org/2000/svg\"  viewBox=\"0 0 54 72\">",
-	        "<path d=\"M38.723,12c-7.187,0-11.16,7.306-11.723,8.131C26.437,19.306,22.504,12,15.277,12C8.791,12,3.533,18.163,3.533,24.647 C3.533,39.964,21.891,55.907,27,56c5.109-0.093,23.467-16.036,23.467-31.353C50.467,18.163,45.209,12,38.723,12z\"/>",
-	        "</svg>",
-	    	"<svg class=\"replyButton\" xmlns=\"http://www.w3.org/2000/svg\"  viewBox=\"0 0 65 72\" name=\"reply" + String(msg["chatNumber"]) + "\" value=\"" + String(msg["chatNumber"]) + "\">",
-	  		"<path d=\"M41 31h-9V19c0-1.14-.647-2.183-1.668-2.688-1.022-.507-2.243-.39-3.15.302l-21 16C5.438 33.18 5 34.064 5 35s.437 1.82 1.182 2.387l21 16c.533.405 1.174.613 1.82.613.453 0 .908-.103 1.33-.312C31.354 53.183 32 52.14 32 51V39h9c5.514 0 10 4.486 10 10 0 2.21 1.79 4 4 4s4-1.79 4-4c0-9.925-8.075-18-18-18z\"/>",
-			"</svg>",
-			"<span class=\"chatTime\">" + String(msg["chatTime"]) + "</span>",
-	        "</div>",
-	        "</div>",
-	    ].join("").replace(/\n/g, "<br />");
-
-	    if (msg["replyId"] != null && msg["replyId"] != 0) {
-		    var replay = [
-		        "<button type=\"button\" name=\"quotation" + String(msg["replyId"]) + "\" value=\"" + String(msg["replyId"]) + "\" id=\"14\">>> " + String(msg["replyId"]) + "</button><br/>",
-		    ].join("").replace(/\n/g, "<br />");
-
-		    return chatHeader + replay + chat;
-	    }
-
-	    return chatHeader + chat;
-	}
-
 
 	//購読処理
 	function subscribe(roomId) {
@@ -614,7 +534,7 @@ jQuery(function ($) {
 
 </script>
 <?php foreach($rooms as $room): ?>
-	<div class="room<?=$room->roomId?>"><h2><?=$room->roomName ?></h2></div>
+	<?= $this->element('roomName', ['room'=> $room]) ?>
 <?php endforeach; ?>
 <?=$this->Form->create(null,['type' => 'post']) ?>
 <table id="sendChat">

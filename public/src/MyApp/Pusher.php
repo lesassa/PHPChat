@@ -191,6 +191,19 @@ class Pusher implements WampServerInterface {
 // 			return;
 // 		}
 
+		if($json->status == "roomCreate") {
+			$topic = $this->topics["9999"];
+			$topic->broadcast($msg);
+			return;
+		}
+
+		if($json->status == "loginId") {
+			$topic = $this->topics["9999"];
+			$topic->broadcast($msg);
+			return;
+		}
+
+
 		//ルーム作成またはログイン
 		if(isset($json->roomCreate) || isset($json->loginId) || isset($json->unsubscribeId)){
 			$topic = $this->topics["9999"];
