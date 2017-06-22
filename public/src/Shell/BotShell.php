@@ -7,6 +7,9 @@ use Cake\Log\Log;
 use Psy\Shell as PsyShell;
 use Cake\ORM\TableRegistry;
 use App\View\AjaxView;
+use Cake\Controller\Component;
+use Cake\Controller\ComponentRegistry;
+use App\Controller\Component\AIComponent;
 
 class BotShell extends Shell
 {
@@ -33,6 +36,18 @@ class BotShell extends Shell
     	//チャットを保存、送信
     	$this->saveChat($aiChat);
     }
+
+
+    public function talkService()
+    {
+    	$AIComponent =new AIComponent(new ComponentRegistry());
+    	//内容設定
+    	$aiChat= $AIComponent->talkAI("今日の勤怠");
+
+    	//チャットを保存、送信
+    	$this->saveChat($aiChat);
+    }
+
 
     /**
      * ZMQでチャットサーバーに送信

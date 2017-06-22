@@ -180,9 +180,9 @@ class Pusher implements WampServerInterface {
 	 * @param  string $msg
 	 */
 	public function zmqCallback($msg) {
-		echo '********** '.__FUNCTION__.' begin **********'.PHP_EOL;
-		echo '$json_string : '.$msg.PHP_EOL;
-		echo '********** '.__FUNCTION__.' end **********'.PHP_EOL;
+// 		echo '********** '.__FUNCTION__.' begin **********'.PHP_EOL;
+// 		echo '$json_string : '.$msg.PHP_EOL;
+// 		echo '********** '.__FUNCTION__.' end **********'.PHP_EOL;
 
 		$json = json_decode($msg);
 
@@ -190,6 +190,13 @@ class Pusher implements WampServerInterface {
 // 		{
 // 			return;
 // 		}
+
+		//ルーム作成またはログイン
+		if(isset($json->roomCreate) || isset($json->loginId) || isset($json->unsubscribeId)){
+			$topic = $this->topics["9999"];
+			$topic->broadcast($msg);
+			return;
+		}
 
 		if($json->status == "roomCreate") {
 			$topic = $this->topics["9999"];
@@ -204,12 +211,6 @@ class Pusher implements WampServerInterface {
 		}
 
 
-		//ルーム作成またはログイン
-		if(isset($json->roomCreate) || isset($json->loginId) || isset($json->unsubscribeId)){
-			$topic = $this->topics["9999"];
-			$topic->broadcast($msg);
-			return;
-		}
 
 		foreach ($this->topics as $topic)
 		{
