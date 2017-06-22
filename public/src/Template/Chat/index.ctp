@@ -14,8 +14,9 @@ jQuery(function ($) {
 	});
 
 	//デスクトップ通知
-	function show(title, msg, icon)
+	function show(roomName, msg, icon, memberName)
 	{
+		var title = memberName + "(" + roomName + ")";
 		notify.createNotification( title, { body: msg, icon: '/icon/' + icon } )
 	}
 
@@ -289,7 +290,7 @@ jQuery(function ($) {
 		    //他の人からはデスクトップに通知する
 		    var chat = msg["chat"];
 		    if (memberId != chat["memberId"]) {
-			  	show(chat["room"]["roomName"], chat["chatText"], chat["member"]["icon"]);
+			  	show(chat["room"]["roomName"], chat["chatText"], chat["member"]["icon"], chat["member"]["memberName"]);
 			  	if (parseInt(chat["roomId"]) != room) {
 				  	upUnread(chat["roomId"]);
 				  	titlenotifier.add();
