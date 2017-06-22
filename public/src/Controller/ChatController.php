@@ -186,7 +186,7 @@ class ChatController extends AppController
     		foreach($participant->subscribes as $subscribe) {
     			$View = new AjaxView();
     			$View->set("subscribe", $subscribe);
-    			$View->set("memberName", $subscribe->member->memberName);
+    			$View->set("memberName", $participant->member->memberName);
     			$response["html"][] = $View->render('/Element/login', false);
     		}
     		$View = new AjaxView();
