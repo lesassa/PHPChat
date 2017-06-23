@@ -12,7 +12,7 @@ class AIComponent  extends Component
 	const FILE = "//P2fsvt01/2170/2G/個人用/2Gプロパー/TIS303761岩浪/勤怠.xlsx";//ファイルパスは/で記載すること
 	const ROW_OFFSET = "4"; //日付の行の手前行
 	const NAME_ROW = "3"; //名前の行
-	const NAME_COLUMN = "2"; //名前の開始列（列は0始まり）
+	const NAME_COLUMN = "3"; //名前の開始列（列は0始まり）
 	const NAME_INDENT = "3"; //名前の列の間隔
 
 	public $components = ['Log', 'Docomo'];
@@ -49,12 +49,13 @@ class AIComponent  extends Component
 			$memberName = $sheet->getCellByColumnAndRow($memberColumn, self::NAME_ROW)->getFormattedValue();
 			while ($memberName != "") {
 				$reply .= PHP_EOL;
-				$servicediv= $sheet->getCellByColumnAndRow($memberColumn, $todayRow)->getFormattedValue();
-				if (preg_match('/平常/', $servicediv)) {
-					$service = "通常出勤";
+				$startTime = $sheet->getCellByColumnAndRow($memberColumn, $todayRow)->getFormattedValue();
+
+				if ($startTime == "") {
+					$service = $sheet->getCellByColumnAndRow($memberColumn + 2, $todayRow)->getFormattedValue();
 				} else {
-					$startTime = $sheet->getCellByColumnAndRow($memberColumn + 1, $todayRow)->getFormattedValue();
-					$endTime = $sheet->getCellByColumnAndRow($memberColumn + 2, $todayRow)->getFormattedValue();
+
+					$endTime = $sheet->getCellByColumnAndRow($memberColumn + 1, $todayRow)->getFormattedValue();
 					$service = $startTime."-".$endTime;
 				}
 				$reply .= $memberName."さんは".$service."だって";
