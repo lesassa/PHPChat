@@ -6,7 +6,7 @@
 		<?php if ($chat->replyId != ""): ?>
 			<?=$this->Form->input(">> ".$chat->replyId, ["type" => "button", "name" => "quotation".$chat->replyId, "value" => $chat->replyId,]) ?><br/>
 		<?php endif; ?>
-		<?=$chat->chatNumber ?>:<?=$chat->member->memberName ?><br/>
+		<span class="chatMember"><?=$chat->chatNumber ?>:<?=$chat->member->memberName ?></span><br/>
 		<?=nl2br (h($chat->chatText)) ?><br/>
 
 		<!-- チャットフッター -->

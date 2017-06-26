@@ -423,4 +423,8 @@ svg{
 hr {
 	clear:both;
 }
+
+.chatMember {
+	font-size:large;
+}
 }
