@@ -1,5 +1,7 @@
 <?= $this->Html->script('autobahn.min.js') ?>
+
 <script>
+var room = "9999";
 jQuery(function ($) {
 
 	//デスクトップ通知サポート確認
@@ -116,7 +118,7 @@ jQuery(function ($) {
 	}
 
 	//ルーム切り替え
-	var room = "9999";
+
 	$('nav').on('click', '[class^=room]', function() {
 
 		//フォームリセット

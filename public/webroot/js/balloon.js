@@ -21,4 +21,18 @@ jQuery(function ($) {
 //	$('#main').on('mouseleave', '.goodButton', function() {
 //		$(this).hideBalloon();
 //	});
+
+	//返信ボタン
+	$('#main').on('mouseenter', '[name^=quotation]', function() {
+		var replyId = $(this).val();
+		var url = 'http://172.19.118.45:8765/chat/get-chat/' + room + '/' + replyId;
+		$(this).showBalloon({
+			html: true,
+			contents: '<img src="https://urin.github.io/jquery.balloon.js/img/balloon-sample-loading.gif" alt="loading..." width="25" height="25">',
+			url: url,
+		})
+	});
+	$('#main').on('mouseleave', '[name^=quotation]', function() {
+		$(this).hideBalloon();
+	});
 });

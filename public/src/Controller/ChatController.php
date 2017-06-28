@@ -62,7 +62,7 @@ class ChatController extends AppController
     			continue;
     		}
 
-    		$chats = $this->getChat($room->roomId);
+    		$chats = $this->getChats($room->roomId);
 	    	$room->chats = $chats;
 	    	$roomsWithChats[$room->roomId] = $room;
     	}
@@ -372,7 +372,7 @@ class ChatController extends AppController
     	}
 
     	//チャット取得
-    	$chats = $this->getChat($this->request->data["roomId"], $this->request->data["chatNumber"]);
+    	$chats = $this->getChats($this->request->data["roomId"], $this->request->data["chatNumber"]);
     	$response["status"] = "success";
     	$response["selecter"] = "#chats".$this->request->data["roomId"];
     	$response["html"] = "";
@@ -384,7 +384,7 @@ class ChatController extends AppController
     	$this->response->body(json_encode($response));
     }
 
-    private function getChat($roomId, $chatNumber = null)
+    private function getChats($roomId, $chatNumber = null)
     {
     	//チャット取得
     	$ChatsDBI = TableRegistry::get('Chats');
@@ -397,6 +397,24 @@ class ChatController extends AppController
     	}
     	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >" => $offset - 10])->andWhere(["chatNumber <=" => $offset])->contain(['Members'])->order(['Chats.chatNumber' => 'DESC']);
     	return $chats;
+    }
+
+    public function getChat($roomId, $chatNumber)
+    {
+    	//AJAX精査
+    	$this->autoRender = FALSE;
+    	if(!$this->request->is('ajax')) {
+    		return;
+    	}
+
+    	//チャット取得
+    	$ChatsDBI = TableRegistry::get('Chats');
+    	$chat = $ChatsDBI->get([$roomId, $chatNumber], ["contain" => ['Members']]);
+
+    	$View = new AjaxView();
+    	$View->set("chat", $chat);
+    	$response = $View->render('/Element/chat', false);
+    	$this->response->body($response);
     }
 
 
