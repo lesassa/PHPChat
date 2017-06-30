@@ -93,7 +93,7 @@ class ChatController extends AppController
 
 	    if ($ChatsDBI->save($chat)) {
 
-	    	$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ["Members", "Rooms"]]);
+	    	$chat = $ChatsDBI->get([$chat->roomId, $chat->chatNumber], ["contain" => ["Members", "Rooms", "Nocares"]]);
 	    	$View = new AjaxView();
 		    $View->set("chat", $chat);
 		    $response["status"] = "success";
@@ -409,7 +409,7 @@ class ChatController extends AppController
 
     	//チャット取得
     	$ChatsDBI = TableRegistry::get('Chats');
-    	$chat = $ChatsDBI->get([$roomId, $chatNumber], ["contain" => ['Members']]);
+    	$chat = $ChatsDBI->get([$roomId, $chatNumber], ["contain" => ['Members', "Nocares"]]);
 
     	$View = new AjaxView();
     	$View->set("chat", $chat);

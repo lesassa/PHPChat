@@ -44,6 +44,12 @@ class ChatsTable extends Table
 				'foreignKey' => 'roomId',
 				'bindingKey' => "roomId",
 		]);
+
+		$this->belongsTo('Nocares', [
+				'className' => 'Nocares',
+				'foreignKey' => ['roomId', 'chatNumber'],
+				'bindingKey' => ['roomId', 'chatNumber'],
+		]);
     }
 
     /**
