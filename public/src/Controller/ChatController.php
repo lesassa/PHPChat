@@ -138,7 +138,7 @@ class ChatController extends AppController
 		    	$this->Log->outputLog("AI reply = [".print_r($replyChat, true)."]");
 
 		    	//チャットサーバに送信
-		    	$replyChat= $ChatsDBI->get([$replyChat->roomId, $replyChat->chatNumber], ["contain" => ["Members",  "Rooms"]]);
+		    	$replyChat= $ChatsDBI->get([$replyChat->roomId, $replyChat->chatNumber], ["contain" => ["Members",  "Rooms", "Nocares"]]);
 		    	$View = new AjaxView();
 		    	$View->set("chat", $replyChat);
 		    	$response["status"] = "success";
@@ -276,7 +276,7 @@ class ChatController extends AppController
     	$ChatsDBI = TableRegistry::get('Chats');
     	$query = $ChatsDBI->find();
     	$ret = $query->select(['max_id' => $query->func()->max('chatNumber')])->where(["roomId =" => $subscribe->roomId])->first();
-    	$chats = $ChatsDBI->find()->where(["roomId =" => $subscribe->roomId])->andWhere(["chatNumber >" => $ret->max_id - 10])->contain(['Members'])->order(['Chats.chatNumber' => 'ASC'])->all();
+    	$chats = $ChatsDBI->find()->where(["Chats.roomId =" => $subscribe->roomId])->andWhere(["Chats.chatNumber >" => $ret->max_id - 10])->contain(['Members', "Nocares"])->order(['Chats.chatNumber' => 'ASC'])->all();
     	$chatsArray = array();
 
     	//チャットサーバに送信
@@ -395,7 +395,7 @@ class ChatController extends AppController
     	} else {
     		$offset = $chatNumber - 1;
     	}
-    	$chats = $ChatsDBI->find()->where(["roomId =" => $roomId])->andWhere(["chatNumber >" => $offset - 10])->andWhere(["chatNumber <=" => $offset])->contain(['Members'])->order(['Chats.chatNumber' => 'DESC']);
+    	$chats = $ChatsDBI->find()->where(["Chats.roomId =" => $roomId])->andWhere(["Chats.chatNumber >" => $offset - 10])->andWhere(["Chats.chatNumber <=" => $offset])->contain(['Members', "Nocares"])->order(['Chats.chatNumber' => 'DESC']);
     	return $chats;
     }
 
