@@ -418,4 +418,23 @@ class ChatController extends AppController
     }
 
 
+    public function addGood($roomId, $chatNumber)
+    {
+    	//AJAX精査
+    	$this->autoRender = FALSE;
+    	if(!$this->request->is('ajax')) {
+    		return;
+    	}
+
+    	//チャット取得
+    	$NocaresDBI = TableRegistry::get('Nocares');
+    	$nocare = $NocaresDBI->newEntity();
+
+
+    	$View = new AjaxView();
+    	$View->set("chat", $chat);
+    	$response = $View->render('/Element/chat', false);
+    	$this->response->body($response);
+    }
+
 }
